@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "1.5.0+bedrock-1.18.0",
+            "version": "1.5.1+bedrock-1.18.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pmmp/BedrockData.git",
-                "reference": "482c679aa5ed0b81c088c2b1ff0b8110a94c8a6c"
+                "url": "https://github.com/TrueToneTeam/BedrockData.git",
+                "reference": "a9c139758ef735256b89e2257e9c1d0bea627798"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/482c679aa5ed0b81c088c2b1ff0b8110a94c8a6c",
-                "reference": "482c679aa5ed0b81c088c2b1ff0b8110a94c8a6c",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/a9c139758ef735256b89e2257e9c1d0bea627798",
+                "reference": "a9c139758ef735256b89e2257e9c1d0bea627798",
                 "shasum": ""
             },
             "type": "library",
@@ -268,8 +268,8 @@
             ],
             "description": "Blobs of data generated from Minecraft: Bedrock Edition, used by PocketMine-MP",
             "support": {
-                "issues": "https://github.com/pmmp/BedrockData/issues",
-                "source": "https://github.com/pmmp/BedrockData/tree/bedrock-1.18.0"
+                "issues": "https://github.com/TrueToneTeam/BedrockData/issues",
+                "source": "https://github.com/TrueToneTeam/BedrockData/tree/bedrock-1.18.0"
             },
             "time": "2021-11-30T18:30:46+00:00"
         },
