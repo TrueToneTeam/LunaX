@@ -30,10 +30,14 @@ use function is_int;
 use function str_repeat;
 
 final class VersionInfo{
-	public const NAME = "PocketMine-MP";
-	public const BASE_VERSION = "4.0.6";
-	public const IS_DEVELOPMENT_BUILD = true;
+	public const NAME = "Luan X(Master)";
+	public const BASE_VERSION = "4.0.5";
+	public const IS_DEVELOPMENT_BUILD = false;
 	public const BUILD_CHANNEL = "stable";
+	
+	public const LUNA_VERSION = "1.0.0-Dev";
+	public const PROTOCL_VERSION = 475;
+	public const MINECRAFT_VERSION = "1.18.2";
 
 	private function __construct(){
 		//NOOP

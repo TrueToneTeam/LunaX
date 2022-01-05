@@ -24,6 +24,9 @@ declare(strict_types=1);
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use Webmozart\PathUtil\Path;
 use function date;
@@ -34,7 +37,13 @@ class DumpMemoryCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"Dumps the memory",
-			"/$name [path]"
+			"/$name [path]",
+			[],
+			[
+				[
+					CommandParameter::standard("path", AvailableCommandsPacket::ARG_TYPE_STRING)
+				]
+			]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_DUMPMEMORY);
 	}

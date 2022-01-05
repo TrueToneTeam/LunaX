@@ -27,6 +27,9 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\Player;
 use pocketmine\world\World;
@@ -39,7 +42,31 @@ class TimeCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			KnownTranslationFactory::pocketmine_command_time_description(),
-			KnownTranslationFactory::pocketmine_command_time_usage()
+			KnownTranslationFactory::pocketmine_command_time_usage(),
+			[],
+			[
+				[
+					CommandParameter::enum("add", new CommandEnum("Add", ["add"]), 0),
+					CommandParameter::standard("amount", AvailableCommandsPacket::ARG_TYPE_INT)
+				],
+				[
+					CommandParameter::enum("query", new CommandEnum("Query", ["query"]), 0)
+				],
+				[
+					CommandParameter::enum("set", new CommandEnum("Set", ["set"]), 0),
+					CommandParameter::standard("amount", AvailableCommandsPacket::ARG_TYPE_INT)
+				],
+				[
+					CommandParameter::enum("set", new CommandEnum("Set", ["set"]), 0),
+					CommandParameter::enum("time", new CommandEnum("TimeSpec", ["day", "midnight", "night", "noon", "sunrise", "sunset"]), 0)
+				],
+				[
+					CommandParameter::enum("start", new CommandEnum("Start", ["start"]), 0)
+				],
+				[
+					CommandParameter::enum("stop", new CommandEnum("Stop", ["stop"]), 0)
+				]
+			]
 		);
 		$this->setPermission(implode(";", [
 			DefaultPermissionNames::COMMAND_TIME_ADD,

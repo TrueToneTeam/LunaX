@@ -48,14 +48,14 @@ trait ContainerTrait{
 			$inventory = $this->getRealInventory();
 			$listeners = $inventory->getListeners()->toArray();
 			$inventory->getListeners()->remove(...$listeners); //prevent any events being fired by initialization
-
+			
 			$newContents = [];
 			/** @var CompoundTag $itemNBT */
 			foreach($inventoryTag as $itemNBT){
 				$newContents[$itemNBT->getByte("Slot")] = Item::nbtDeserialize($itemNBT);
 			}
 			$inventory->setContents($newContents);
-
+			
 			$inventory->getListeners()->add(...$listeners);
 		}
 

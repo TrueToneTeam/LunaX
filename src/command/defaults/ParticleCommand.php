@@ -31,6 +31,9 @@ use pocketmine\item\ItemFactory;
 use pocketmine\item\VanillaItems;
 use pocketmine\lang\KnownTranslationFactory;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\Player;
 use pocketmine\utils\Random;
@@ -79,7 +82,21 @@ class ParticleCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			KnownTranslationFactory::pocketmine_command_particle_description(),
-			KnownTranslationFactory::pocketmine_command_particle_usage()
+			KnownTranslationFactory::pocketmine_command_particle_usage(),
+			[],
+			[
+				[
+					CommandParameter::standard("effect", AvailableCommandsPacket::ARG_TYPE_STRING),
+					CommandParameter::standard("x", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("y", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("z", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("xd", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("yd", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("zd", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("count", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("data", AvailableCommandsPacket::ARG_TYPE_INT, 0, true)
+				]
+			]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_PARTICLE);
 	}

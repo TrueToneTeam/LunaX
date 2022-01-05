@@ -2258,11 +2258,6 @@ class World implements ChunkManager{
 		$previousSpawn = $this->getSpawnLocation();
 		$this->provider->getWorldData()->setSpawn($pos);
 		(new SpawnChangeEvent($this, $previousSpawn))->call();
-
-		$location = Position::fromObject($pos, $this);
-		foreach($this->players as $player){
-			$player->getNetworkSession()->syncWorldSpawnPoint($location);
-		}
 	}
 
 	/**

@@ -291,7 +291,7 @@ class Human extends Living implements ProjectileSource, InventoryHolder{
 		$enderChestInventoryTag = $nbt->getListTag("EnderChestInventory");
 		if($enderChestInventoryTag !== null){
 			$enderChestInventoryItems = [];
-
+			
 			/** @var CompoundTag $item */
 			foreach($enderChestInventoryTag as $i => $item){
 				$enderChestInventoryItems[$item->getByte("Slot")] = Item::nbtDeserialize($item);
