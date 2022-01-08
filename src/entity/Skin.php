@@ -23,6 +23,11 @@ declare(strict_types=1);
 
 namespace pocketmine\entity;
 
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\network\mcpe\protocol\types\skin\SkinAnimation;
+use pocketmine\network\mcpe\protocol\types\skin\SkinData;
+use pocketmine\network\mcpe\protocol\types\skin\SkinImage;
+
 use Ahc\Json\Comment as CommentedJsonDecoder;
 use function implode;
 use function in_array;
@@ -32,9 +37,14 @@ use function strlen;
 
 final class Skin{
 	public const ACCEPTED_SKIN_SIZES = [
-		64 * 32 * 4,
-		64 * 64 * 4,
-		128 * 128 * 4
+		SkinImage::SINGLE_SKIN_SIZE,
+		SkinImage::DOUBLE_SKIN_SIZE,
+		SkinImage::SKIN_128_64_SIZE,
+		SkinImage::SKIN_128_128_SIZE,
+		SkinImage::SKIN_256_128_SIZE,
+		SkinImage::SKIN_256_256_SIZE,
+		SkinImage::SKIN_512_256_SIZE,
+		SkinImage::SKIN_512_512_SIZE
 	];
 
 	/** @var string */
@@ -48,6 +58,41 @@ final class Skin{
 	/** @var string */
 	private $geometryData;
 
+	/** @var string */
+	private $playFabId;
+	/** @var string */
+	private $resourcePatch;
+	/** @var SkinImage */
+	private $skinImage;
+	/** @var SkinAnimation[] */
+	private $animations = [];
+	/** @var string */
+	private $geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
+	/** @var string */
+	private $animationData = "";
+	/** @var string */
+	private $capeId;
+	/** @var string */
+	private $fullSkinId;
+	/** @var string */
+	private $armSize = SkinData::ARM_SIZE_WIDE;
+	/** @var string */
+	private $skinColor = "";
+	/** @var PersonaSkinPiece[] */
+	private $personaPieces = [];
+	/** @var PersonaPieceTintColor[] */
+	private $pieceTintColors = [];
+	/** @var bool */
+	private $isVerified = true;
+	/** @var bool */
+	private $persona = false;
+	/** @var bool */
+	private $premium = false;
+	/** @var bool */
+	private $personaCapeOnClassic = false;
+	/** @var bool */
+	private $isPrimaryUser = true;
+
 	public function __construct(string $skinId, string $skinData, string $capeData = "", string $geometryName = "", string $geometryData = ""){
 		if($skinId === ""){
 			throw new InvalidSkinException("Skin ID must not be empty");
@@ -56,7 +101,7 @@ final class Skin{
 		if(!in_array($len, self::ACCEPTED_SKIN_SIZES, true)){
 			throw new InvalidSkinException("Invalid skin data size $len bytes (allowed sizes: " . implode(", ", self::ACCEPTED_SKIN_SIZES) . ")");
 		}
-		if($capeData !== "" and strlen($capeData) !== 8192){
+		if($capeData !== "" and strlen($capeData) !== SkinImage::SINGLE_SKIN_SIZE){
 			throw new InvalidSkinException("Invalid cape data size " . strlen($capeData) . " bytes (must be exactly 8192 bytes)");
 		}
 
@@ -101,5 +146,176 @@ final class Skin{
 
 	public function getGeometryData() : string{
 		return $this->geometryData;
+	}
+
+
+	public function getPlayFabId() : string{
+		return $this->playFabId;
+	}
+
+	public function setPlayFabId(string $playFabId) : Skin{
+		$this->playFabId = $playFabId;
+		return $this;
+	}
+
+	public function getResourcePatch() : string{
+		return $this->resourcePatch;
+	}
+
+	public function setResourcePatch(string $resourcePatch) : Skin{
+		$this->resourcePatch = $resourcePatch;
+		return $this;
+	}
+
+	public function getSkinImage() : SkinImage{
+		return $this->skinImage;
+	}
+
+	public function setSkinImage(SkinImage $skinImage) : Skin{
+		$this->skinImage = $skinImage;
+		return $this;
+	}
+
+	/**
+	 * @return SkinAnimation[]
+	 */
+	public function getAnimations() : array{
+		return $this->animations;
+	}
+
+	/**
+	 * @param SkinAnimation[] $animations
+	 */
+	public function setAnimations(array $animations) : Skin{
+		$this->animations = $animations;
+		return $this;
+	}
+
+	public function getCapeImage() : SkinImage{
+		return new SkinImage(64, 32, $capeData);
+	}
+
+	public function getGeometryDataEngineVersion() : string{
+		return $this->geometryDataEngineVersion;
+	}
+
+	public function getAnimationData() : string{
+		return $this->animationData;
+	}
+
+	public function setAnimationData(string $animationData) : Skin{
+		$this->animationData = $animationData;
+		return $this;
+	}
+
+	public function getCapeId() : string{
+		return $this->capeId;
+	}
+
+	public function setFullSkinId(string $fullSkinId) : Skin{
+		$this->fullSkinId = $fullSkinId;
+		return $this;
+	}
+
+	public function getFullSkinId() : string{
+		return $this->fullSkinId;
+	}
+
+	public function setCapeId(string $capeId) : Skin{
+		$this->capeId = $capeId;
+		return $this;
+	}
+
+	public function getArmSize() : string{
+		return $this->armSize;
+	}
+
+	public function setArmSize(string $armSize) : Skin{
+		$this->armSize = $armSize;
+		return $this;
+	}
+
+	public function getSkinColor() : string{
+		return $this->skinColor;
+	}
+
+	public function setSkinColor(string $skinColor) : Skin{
+		$this->skinColor = $skinColor;
+		return $this;
+	}
+
+	/**
+	 * @return PersonaSkinPiece[]
+	 */
+	public function getPersonaPieces() : array{
+		return $this->personaPieces;
+	}
+
+	/**
+	 * @param PersonaSkinPiece[] $personaPieces
+	 */
+	public function setPersonaPieces(array $personaPieces) : Skin{
+		$this->personaPieces = $personaPieces;
+		return $this;
+	}
+
+	/**
+	 * @return PersonaPieceTintColor[]
+	 */
+	public function getPieceTintColors() : array{
+		return $this->pieceTintColors;
+	}
+
+	/**
+	 * @param PersonaPieceTintColor[] $pieceTintColors
+	 */
+	public function setPieceTintColors(array $pieceTintColors) : Skin{
+		$this->pieceTintColors = $pieceTintColors;
+		return $this;
+	}
+
+	public function isVerified() : bool{
+		return $this->isVerified;
+	}
+
+	public function setVerified(bool $isVerified) : Skin{
+		$this->isVerified = $isVerified;
+		return $this;
+	}
+
+	public function isPersona() : bool{
+		return $this->persona;
+	}
+
+	public function setPersona(bool $persona) : Skin{
+		$this->persona = $persona;
+		return $this;
+	}
+
+	public function isPremium() : bool{
+		return $this->premium;
+	}
+
+	public function setPremium(bool $premium) : Skin{
+		$this->premium = $premium;
+		return $this;
+	}
+
+	public function isPersonaCapeOnClassic() : bool{
+		return $this->personaCapeOnClassic;
+	}
+
+	public function setPersonaCapeOnClassic(bool $personaCapeOnClassic) : Skin{
+		$this->personaCapeOnClassic = $personaCapeOnClassic;
+		return $this;
+	}
+
+	public function isPrimaryUser() : bool{
+		return $this->isPrimaryUser;
+	}
+
+	public function setPrimaryUser(bool $isPrimaryUser) : Skin{
+		$this->isPrimaryUser = $isPrimaryUser;
+		return $this;
 	}
 }

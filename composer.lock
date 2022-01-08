@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5dc75b1eaa0493544081f223d3e2304c",
+    "content-hash": "055bec16a9bbc839f4410d09b09f2703",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -275,16 +275,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "7.1.0+bedrock-1.18.0",
+            "version": "7.4.0+bedrock-1.18.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pmmp/BedrockProtocol.git",
-                "reference": "42f2a00634c17c346fd98c05b2daf29d1fbf5805"
+                "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
+                "reference": "fcb61d5f81b4a90438ccc17cc435a2f0ab8a2b6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/42f2a00634c17c346fd98c05b2daf29d1fbf5805",
-                "reference": "42f2a00634c17c346fd98c05b2daf29d1fbf5805",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/fcb61d5f81b4a90438ccc17cc435a2f0ab8a2b6e",
+                "reference": "fcb61d5f81b4a90438ccc17cc435a2f0ab8a2b6e",
                 "shasum": ""
             },
             "require": {
@@ -315,8 +315,8 @@
             ],
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
-                "issues": "https://github.com/pmmp/BedrockProtocol/issues",
-                "source": "https://github.com/pmmp/BedrockProtocol/tree/7.1.0+bedrock-1.18.0"
+                "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/7.4.0+bedrock-1.18.0"
             },
             "time": "2021-12-15T03:07:05+00:00"
         },
@@ -1900,16 +1900,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.2.0",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "cbe085f9fdead5b6d62e4c022ca52dc9427a10ee"
+                "reference": "151a51f6149855785fbd883e79768c0abc96b75f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/cbe085f9fdead5b6d62e4c022ca52dc9427a10ee",
-                "reference": "cbe085f9fdead5b6d62e4c022ca52dc9427a10ee",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/151a51f6149855785fbd883e79768c0abc96b75f",
+                "reference": "151a51f6149855785fbd883e79768c0abc96b75f",
                 "shasum": ""
             },
             "require": {
@@ -1925,7 +1925,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.3-dev"
                 }
             },
             "autoload": {
@@ -1940,7 +1940,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.2.0"
+                "source": "https://github.com/phpstan/phpstan/tree/1.3.3"
             },
             "funding": [
                 {
@@ -1960,7 +1960,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-18T14:09:01+00:00"
+            "time": "2022-01-07T09:49:03+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
