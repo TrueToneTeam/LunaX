@@ -153,7 +153,7 @@ final class Skin{
 		return $this->playFabId;
 	}
 
-	public function setPlayFabId(string $playFabId) : Skin{
+	public function setPlayFabId(string $playFabId) : self{
 		$this->playFabId = $playFabId;
 		return $this;
 	}
@@ -162,7 +162,7 @@ final class Skin{
 		return $this->resourcePatch;
 	}
 
-	public function setResourcePatch(string $resourcePatch) : Skin{
+	public function setResourcePatch(string $resourcePatch) : self{
 		$this->resourcePatch = $resourcePatch;
 		return $this;
 	}
@@ -171,7 +171,7 @@ final class Skin{
 		return $this->skinImage;
 	}
 
-	public function setSkinImage(SkinImage $skinImage) : Skin{
+	public function setSkinImage(SkinImage $skinImage) : self{
 		$this->skinImage = $skinImage;
 		return $this;
 	}
@@ -186,7 +186,7 @@ final class Skin{
 	/**
 	 * @param SkinAnimation[] $animations
 	 */
-	public function setAnimations(array $animations) : Skin{
+	public function setAnimations(array $animations) : self{
 		$this->animations = $animations;
 		return $this;
 	}
@@ -203,7 +203,7 @@ final class Skin{
 		return $this->animationData;
 	}
 
-	public function setAnimationData(string $animationData) : Skin{
+	public function setAnimationData(string $animationData) : self{
 		$this->animationData = $animationData;
 		return $this;
 	}
@@ -212,7 +212,7 @@ final class Skin{
 		return $this->capeId;
 	}
 
-	public function setFullSkinId(string $fullSkinId) : Skin{
+	public function setFullSkinId(string $fullSkinId) : self{
 		$this->fullSkinId = $fullSkinId;
 		return $this;
 	}
@@ -221,7 +221,7 @@ final class Skin{
 		return $this->fullSkinId;
 	}
 
-	public function setCapeId(string $capeId) : Skin{
+	public function setCapeId(string $capeId) : self{
 		$this->capeId = $capeId;
 		return $this;
 	}
@@ -230,7 +230,7 @@ final class Skin{
 		return $this->armSize;
 	}
 
-	public function setArmSize(string $armSize) : Skin{
+	public function setArmSize(string $armSize) : self{
 		$this->armSize = $armSize;
 		return $this;
 	}
@@ -239,7 +239,7 @@ final class Skin{
 		return $this->skinColor;
 	}
 
-	public function setSkinColor(string $skinColor) : Skin{
+	public function setSkinColor(string $skinColor) : self{
 		$this->skinColor = $skinColor;
 		return $this;
 	}
@@ -254,7 +254,7 @@ final class Skin{
 	/**
 	 * @param PersonaSkinPiece[] $personaPieces
 	 */
-	public function setPersonaPieces(array $personaPieces) : Skin{
+	public function setPersonaPieces(array $personaPieces) : self{
 		$this->personaPieces = $personaPieces;
 		return $this;
 	}
@@ -269,7 +269,7 @@ final class Skin{
 	/**
 	 * @param PersonaPieceTintColor[] $pieceTintColors
 	 */
-	public function setPieceTintColors(array $pieceTintColors) : Skin{
+	public function setPieceTintColors(array $pieceTintColors) : self{
 		$this->pieceTintColors = $pieceTintColors;
 		return $this;
 	}
@@ -287,7 +287,7 @@ final class Skin{
 		return $this->persona;
 	}
 
-	public function setPersona(bool $persona) : Skin{
+	public function setPersona(bool $persona) : self{
 		$this->persona = $persona;
 		return $this;
 	}
@@ -296,7 +296,7 @@ final class Skin{
 		return $this->premium;
 	}
 
-	public function setPremium(bool $premium) : Skin{
+	public function setPremium(bool $premium) : self{
 		$this->premium = $premium;
 		return $this;
 	}
@@ -305,7 +305,7 @@ final class Skin{
 		return $this->personaCapeOnClassic;
 	}
 
-	public function setPersonaCapeOnClassic(bool $personaCapeOnClassic) : Skin{
+	public function setPersonaCapeOnClassic(bool $personaCapeOnClassic) : self{
 		$this->personaCapeOnClassic = $personaCapeOnClassic;
 		return $this;
 	}
@@ -314,7 +314,7 @@ final class Skin{
 		return $this->isPrimaryUser;
 	}
 
-	public function setPrimaryUser(bool $isPrimaryUser) : Skin{
+	public function setPrimaryUser(bool $isPrimaryUser) : self{
 		$this->isPrimaryUser = $isPrimaryUser;
 		return $this;
 	}
