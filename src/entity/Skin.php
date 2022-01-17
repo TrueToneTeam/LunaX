@@ -39,10 +39,16 @@ final class Skin{
 	public const ACCEPTED_SKIN_SIZES = [
 		SkinImage::SINGLE_SKIN_SIZE,
 		SkinImage::DOUBLE_SKIN_SIZE,
+		SkinImage::SKIN_128_32_SIZE,
 		SkinImage::SKIN_128_64_SIZE,
 		SkinImage::SKIN_128_128_SIZE,
+		SkinImage::SKIN_256_32_SIZE,
+		SkinImage::SKIN_256_64_SIZE,
 		SkinImage::SKIN_256_128_SIZE,
 		SkinImage::SKIN_256_256_SIZE,
+		SkinImage::SKIN_512_32_SIZE,
+		SkinImage::SKIN_512_64_SIZE,
+		SkinImage::SKIN_512_128_SIZE,
 		SkinImage::SKIN_512_256_SIZE,
 		SkinImage::SKIN_512_512_SIZE
 	];
