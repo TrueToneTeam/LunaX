@@ -30,8 +30,9 @@ use function is_int;
 use function str_repeat;
 
 final class VersionInfo{
+
 	public const NAME = "Luan X(Master)";
-	public const BASE_VERSION = "4.0.6";
+	public const BASE_VERSION = "4.0.7";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "stable";
 	
