@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "1.5.1+bedrock-1.18.0",
+            "version": "1.5.2+bedrock-1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
-                "reference": "a9c139758ef735256b89e2257e9c1d0bea627798"
+                "reference": "f18f7a6536b29ca60584a6eb4317ce71666f110e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/a9c139758ef735256b89e2257e9c1d0bea627798",
-                "reference": "a9c139758ef735256b89e2257e9c1d0bea627798",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/f18f7a6536b29ca60584a6eb4317ce71666f110e",
+                "reference": "f18f7a6536b29ca60584a6eb4317ce71666f110e",
                 "shasum": ""
             },
             "type": "library",
@@ -275,16 +275,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "7.4.1+bedrock-1.18.0",
+            "version": "7.4.2+bedrock-1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "dd43cbd0e3ce1efc3dad7bb98e8246434d79f326"
+                "reference": "32ee04e453f43dc5adff887e469b74706a6dfc76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/dd43cbd0e3ce1efc3dad7bb98e8246434d79f326",
-                "reference": "dd43cbd0e3ce1efc3dad7bb98e8246434d79f326",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/32ee04e453f43dc5adff887e469b74706a6dfc76",
+                "reference": "32ee04e453f43dc5adff887e469b74706a6dfc76",
                 "shasum": ""
             },
             "require": {
