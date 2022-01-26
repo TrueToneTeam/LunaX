@@ -755,8 +755,6 @@ class World implements ChunkManager{
 
 	/**
 	 * @internal
-	 *
-	 * @param Player ...$targets If empty, will send to all players in the world.
 	 */
 	public function sendTime(Player ...$targets) : void{
 		if(count($targets) === 0){
@@ -856,7 +854,7 @@ class World implements ChunkManager{
 		//Update entities that need update
 		Timings::$tickEntity->startTiming();
 		foreach($this->updateEntities as $id => $entity){
-			if($entity->isClosed() or !$entity->onUpdate($currentTick)){
+			if($entity->isClosed() or $entity->isFlaggedForDespawn() or !$entity->onUpdate($currentTick)){
 				unset($this->updateEntities[$id]);
 			}
 			if($entity->isFlaggedForDespawn()){
@@ -949,6 +947,8 @@ class World implements ChunkManager{
 	public function createBlockUpdatePackets(array $blocks) : array{
 		$packets = [];
 
+		$blockMapping = RuntimeBlockMapping::getInstance();
+
 		foreach($blocks as $b){
 			if(!($b instanceof Vector3)){
 				throw new \TypeError("Expected Vector3 in blocks array, got " . (is_object($b) ? get_class($b) : gettype($b)));
@@ -958,7 +958,7 @@ class World implements ChunkManager{
 			$blockPosition = BlockPosition::fromVector3($b);
 			$packets[] = UpdateBlockPacket::create(
 				$blockPosition,
-				RuntimeBlockMapping::getInstance()->toRuntimeId($fullBlock->getFullId()),
+				$blockMapping->toRuntimeId($fullBlock->getFullId()),
 				UpdateBlockPacket::FLAG_NETWORK,
 				UpdateBlockPacket::DATA_LAYER_NORMAL
 			);
@@ -1107,6 +1107,7 @@ class World implements ChunkManager{
 			$entity->onRandomUpdate();
 		}
 
+		$blockFactory = BlockFactory::getInstance();
 		foreach($chunk->getSubChunks() as $Y => $subChunk){
 			if(!$subChunk->isEmptyFast()){
 				$k = 0;
@@ -1123,8 +1124,7 @@ class World implements ChunkManager{
 					$state = $subChunk->getFullBlock($x, $y, $z);
 
 					if(isset($this->randomTickBlocks[$state])){
-						/** @var Block $block */
-						$block = BlockFactory::getInstance()->fromFullBlock($state);
+						$block = $blockFactory->fromFullBlock($state);
 						$block->position($this, $chunkX * Chunk::EDGE_LENGTH + $x, ($Y << SubChunk::COORD_BIT_SIZE) + $y, $chunkZ * Chunk::EDGE_LENGTH + $z);
 						$block->onRandomTick();
 					}
