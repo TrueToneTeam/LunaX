@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "1.5.2+bedrock-1.18.0",
+            "version": "1.5.3+bedrock-1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
-                "reference": "f18f7a6536b29ca60584a6eb4317ce71666f110e"
+                "reference": "17f9b7f7c36a5c336a6f06d385c87a6b5df6baae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/f18f7a6536b29ca60584a6eb4317ce71666f110e",
-                "reference": "f18f7a6536b29ca60584a6eb4317ce71666f110e",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/17f9b7f7c36a5c336a6f06d385c87a6b5df6baae",
+                "reference": "17f9b7f7c36a5c336a6f06d385c87a6b5df6baae",
                 "shasum": ""
             },
             "type": "library",
@@ -275,16 +275,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "7.4.2+bedrock-1.18.0",
+            "version": "7.4.3+bedrock-1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "32ee04e453f43dc5adff887e469b74706a6dfc76"
+                "reference": "c9821a6d7d1a2eaa2e9ba808a39014237ac865d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/32ee04e453f43dc5adff887e469b74706a6dfc76",
-                "reference": "32ee04e453f43dc5adff887e469b74706a6dfc76",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/c9821a6d7d1a2eaa2e9ba808a39014237ac865d0",
+                "reference": "c9821a6d7d1a2eaa2e9ba808a39014237ac865d0",
                 "shasum": ""
             },
             "require": {
@@ -298,7 +298,7 @@
                 "ramsey/uuid": "^4.1"
             },
             "require-dev": {
-                "phpstan/phpstan": "1.3.3",
+                "phpstan/phpstan": "1.4.5",
                 "phpstan/phpstan-phpunit": "^1.0.0",
                 "phpstan/phpstan-strict-rules": "^1.0.0",
                 "phpunit/phpunit": "^9.5"
