@@ -134,7 +134,7 @@ abstract class Command{
 
 	public function testPermissionSilent(CommandSender $target, ?string $permission = null) : bool{
 		$permission ??= $this->permission;
-		if($permission === null or $permission === ""){
+		if($permission === null || $permission === ""){
 			return true;
 		}
 
@@ -189,7 +189,7 @@ abstract class Command{
 	}
 
 	private function allowChangesFrom(CommandMap $commandMap) : bool{
-		return $this->commandMap === null or $this->commandMap === $commandMap;
+		return $this->commandMap === null || $this->commandMap === $commandMap;
 	}
 
 	public function isRegistered() : bool{
@@ -242,7 +242,7 @@ abstract class Command{
 		$result = KnownTranslationFactory::chat_type_admin($source->getName(), $message);
 		$colored = $result->prefix(TextFormat::GRAY . TextFormat::ITALIC);
 
-		if($sendToSource and !($source instanceof ConsoleCommandSender)){
+		if($sendToSource && !($source instanceof ConsoleCommandSender)){
 			$source->sendMessage($message);
 		}
 
