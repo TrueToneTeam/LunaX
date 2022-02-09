@@ -66,7 +66,7 @@ final class Skin{
 	private $geometryData;
 
 	/** @var string */
-	private $playFabId;
+	private $playFabId = "";
 	/** @var string */
 	private $resourcePatch;
 	/** @var SkinImage */
@@ -78,9 +78,9 @@ final class Skin{
 	/** @var string */
 	private $animationData = "";
 	/** @var string */
-	private $capeId;
+	private $capeId = "";
 	/** @var string */
-	private $fullSkinId;
+	private $fullSkinId = "";
 	/** @var string */
 	private $armSize = SkinData::ARM_SIZE_WIDE;
 	/** @var string */
@@ -96,7 +96,7 @@ final class Skin{
 	/** @var bool */
 	private $premium = false;
 	/** @var bool */
-	private $personaCapeOnClassic = false;
+	private $personaCapeOnClassic = true;
 	/** @var bool */
 	private $isPrimaryUser = true;
 
@@ -139,20 +139,45 @@ final class Skin{
 		return $this->skinId;
 	}
 
+	public function setSkinId(string $skinId) : self{
+		$this->skinId = $skinId;
+		return $this;
+	}
+
 	public function getSkinData() : string{
 		return $this->skinData;
+	}
+
+	public function setSkinData(string $skinData) : self{
+		$this->skinData = $skinData;
+		return $this;
 	}
 
 	public function getCapeData() : string{
 		return $this->capeData;
 	}
 
+	public function setCapeData(string $capeData) : self{
+		$this->capeData = $capeData;
+		return $this;
+	}
+
 	public function getGeometryName() : string{
 		return $this->geometryName;
 	}
 
+	public function setGeometryName(string $geometryName) : self{
+		$this->geometryName = $geometryName;
+		return $this;
+	}
+
 	public function getGeometryData() : string{
 		return $this->geometryData;
+	}
+
+	public function setGeometryData(string $geometryData) : self{
+		$this->geometryData = $geometryData;
+		return $this;
 	}
 
 
@@ -199,7 +224,7 @@ final class Skin{
 	}
 
 	public function getCapeImage() : SkinImage{
-		return new SkinImage(64, 32, $capeData);
+		return new SkinImage(32, 64, $this->capeData);
 	}
 
 	public function getGeometryDataEngineVersion() : string{
