@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "1.6.0.1+bedrock-1.18.10",
+            "version": "1.6.0(v1)+bedrock-1.18.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
-                "reference": "a669b82e3f9c7d53cb75677e2b96916d961b991d"
+                "reference": "210a8873c6b18bcc851502701fd46ca967472fc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/a669b82e3f9c7d53cb75677e2b96916d961b991d",
-                "reference": "a669b82e3f9c7d53cb75677e2b96916d961b991d",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/210a8873c6b18bcc851502701fd46ca967472fc8",
+                "reference": "210a8873c6b18bcc851502701fd46ca967472fc8",
                 "shasum": ""
             },
             "type": "library",
@@ -271,20 +271,20 @@
                 "issues": "https://github.com/TrueToneTeam/BedrockData/issues",
                 "source": "https://github.com/TrueToneTeam/BedrockData/tree/bedrock-1.18.10"
             },
-            "time": "2022-02-08T19:13:47+00:00"
+            "time": "2022-03-08T19:13:47+00:00"
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "8.0.0.1+bedrock-1.18.10",
+            "version": "8.1.0(v1)+bedrock-1.18.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "56bba0fedd69641669b5efd3febca87ccb7e151e"
+                "reference": "5db79e69dbd1b5b25132df8df7528a646dc8f3c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/56bba0fedd69641669b5efd3febca87ccb7e151e",
-                "reference": "56bba0fedd69641669b5efd3febca87ccb7e151e",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/5db79e69dbd1b5b25132df8df7528a646dc8f3c1",
+                "reference": "5db79e69dbd1b5b25132df8df7528a646dc8f3c1",
                 "shasum": ""
             },
             "require": {
