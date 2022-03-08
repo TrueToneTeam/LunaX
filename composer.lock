@@ -249,7 +249,7 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "1.6.0(v1)+bedrock-1.18.10",
+            "version": "v1+1.6.0+bedrock-1.18.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
@@ -275,7 +275,7 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "8.1.0(v1)+bedrock-1.18.10",
+            "version": "v1+8.0.1+bedrock-1.18.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
