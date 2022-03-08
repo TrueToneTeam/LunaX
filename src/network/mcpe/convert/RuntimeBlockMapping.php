@@ -115,20 +115,6 @@ final class RuntimeBlockMapping{
 			}
 			throw new \RuntimeException("Mapped new state does not appear in network table");
 		}
-		
-		/*$blockIdMap = json_decode(file_get_contents(\pocketmine\BEDROCK_DATA_PATH."block_id_map.json"), true);
-		$metaMap = [];
-		
-		foreach($this->getBedrockKnownStates() as $runtimeId => $nbt){
-			$mcpeName = $nbt->getString("name");
-			$meta = isset($metaMap[$mcpeName]) ? ($metaMap[$mcpeName] + 1) : 0;
-			$id = $blockIdMap[$mcpeName] ?? BlockLegacyIds::AIR;
-			
-			if($id !== BlockLegacyIds::AIR && $meta <= 15 && !BlockFactory::getInstance()->isRegistered($id, $meta)){
-				$metaMap[$mcpeName] = $meta;
-				$this->registerMapping($runtimeId, $id, $meta);
-			}
-		}*/
 	}
 
 	public function toRuntimeId(int $internalStateId) : int{
