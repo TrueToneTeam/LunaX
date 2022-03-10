@@ -31,13 +31,13 @@ use function str_repeat;
 
 final class VersionInfo{
 	public const NAME = "Luan X(Master)";
-	public const BASE_VERSION = "4.2.3";
+	public const BASE_VERSION = "4.2.4";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "stable";
 	
-	public const LUNA_VERSION = "1.0.0-Dev";
-	public const PROTOCL_VERSION = 475;
-	public const MINECRAFT_VERSION = "1.18.2";
+	public const LUNA_VERSION = "1.1.0";
+	public const PROTOCL_VERSION = 486;
+	public const MINECRAFT_VERSION = "1.18.10";
 
 	private function __construct(){
 		//NOOP
