@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "v1+1.6.0+bedrock-1.18.10",
+            "version": "v2+1.6.0+bedrock-1.18.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
-                "reference": "210a8873c6b18bcc851502701fd46ca967472fc8"
+                "reference": "3c68aa4e01c927dd9759521d594b720f435f1099"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/210a8873c6b18bcc851502701fd46ca967472fc8",
-                "reference": "210a8873c6b18bcc851502701fd46ca967472fc8",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/3c68aa4e01c927dd9759521d594b720f435f1099",
+                "reference": "3c68aa4e01c927dd9759521d594b720f435f1099",
                 "shasum": ""
             },
             "type": "library",
