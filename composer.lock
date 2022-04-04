@@ -269,7 +269,7 @@
             "description": "Blobs of data generated from Minecraft: Bedrock Edition, used by PocketMine-MP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockData/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockData/tree/bedrock-1.18.10"
+                "source": "https://github.com/TrueToneTeam/BedrockData/tree/v2+1.6.0+bedrock-1.18.10"
             },
             "time": "2022-03-08T19:13:47+00:00"
         },
