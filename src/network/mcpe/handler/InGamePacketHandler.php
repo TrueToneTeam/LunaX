@@ -224,8 +224,10 @@ class InGamePacketHandler extends PacketHandler{
 			$this->player->jump();
 		}
 
-		//TODO: this packet has WAYYYYY more useful information that we're not using
-		$this->player->handleMovement($newPos);
+		if(!$this->forceMoveSync){
+			//TODO: this packet has WAYYYYY more useful information that we're not using
+			$this->player->handleMovement($newPos);
+		}
 
 		$packetHandled = true;
 
@@ -451,13 +453,12 @@ class InGamePacketHandler extends PacketHandler{
 			case UseItemTransactionData::ACTION_CLICK_AIR:
 				if($this->player->isUsingItem()){
 					if(!$this->player->consumeHeldItem()){
-						$this->inventoryManager->syncSlot($this->player->getInventory(), $this->player->getInventory()->getHeldItemIndex());
+						$hungerAttr = $this->player->getAttributeMap()->get(Attribute::HUNGER) ?? throw new AssumptionFailedError();
+						$hungerAttr->markSynchronized(false);
 					}
 					return true;
 				}
-				if(!$this->player->useHeldItem()){
-					$this->inventoryManager->syncSlot($this->player->getInventory(), $this->player->getInventory()->getHeldItemIndex());
-				}
+				$this->player->useHeldItem();
 				return true;
 		}
 
@@ -477,7 +478,6 @@ class InGamePacketHandler extends PacketHandler{
 	 * Internal function used to execute rollbacks when an action fails on a block.
 	 */
 	private function onFailedBlockAction(Vector3 $blockPos, ?int $face) : void{
-		$this->inventoryManager->syncSlot($this->player->getInventory(), $this->player->getInventory()->getHeldItemIndex());
 		if($blockPos->distanceSquared($this->player->getLocation()) < 10000){
 			$blocks = $blockPos->sidesArray();
 			if($face !== null){
@@ -506,14 +506,10 @@ class InGamePacketHandler extends PacketHandler{
 		//TODO: use transactiondata for rollbacks here
 		switch($data->getActionType()){
 			case UseItemOnEntityTransactionData::ACTION_INTERACT:
-				if(!$this->player->interactEntity($target, $data->getClickPosition())){
-					$this->inventoryManager->syncSlot($this->player->getInventory(), $this->player->getInventory()->getHeldItemIndex());
-				}
+				$this->player->interactEntity($target, $data->getClickPosition());
 				return true;
 			case UseItemOnEntityTransactionData::ACTION_ATTACK:
-				if(!$this->player->attackEntity($target)){
-					$this->inventoryManager->syncSlot($this->player->getInventory(), $this->player->getInventory()->getHeldItemIndex());
-				}
+				$this->player->attackEntity($target);
 				return true;
 		}
 
