@@ -249,16 +249,16 @@
         },
         {
             "name": "pocketmine/bedrock-data",
-            "version": "v1+1.7.0+bedrock-1.18.30",
+            "version": "v2+1.7.0+bedrock-1.18.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockData.git",
-                "reference": "29eccc600c412045ea1e00c16416331ddac0f909"
+                "reference": "3d9ac791fa3ff65a1c00c41b29981de34d25568a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/29eccc600c412045ea1e00c16416331ddac0f909",
-                "reference": "29eccc600c412045ea1e00c16416331ddac0f909",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockData/zipball/3d9ac791fa3ff65a1c00c41b29981de34d25568a",
+                "reference": "3d9ac791fa3ff65a1c00c41b29981de34d25568a",
                 "shasum": ""
             },
             "type": "library",
@@ -269,22 +269,22 @@
             "description": "Blobs of data generated from Minecraft: Bedrock Edition, used by PocketMine-MP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockData/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockData/tree/v1+1.7.0+bedrock-1.18.30"
+                "source": "https://github.com/TrueToneTeam/BedrockData/tree/v2+1.7.0+bedrock-1.18.30"
             },
             "time": "2022-03-08T19:13:47+00:00"
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "v1+9.0.0+bedrock-1.18.30",
+            "version": "v2+9.0.0+bedrock-1.18.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "13a0be2541b0bf2f627d4d2d35b6c38fa4458564"
+                "reference": "df1650b6d2a79f74a1ba6ff2e27ce795ef871f7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/13a0be2541b0bf2f627d4d2d35b6c38fa4458564",
-                "reference": "13a0be2541b0bf2f627d4d2d35b6c38fa4458564",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/df1650b6d2a79f74a1ba6ff2e27ce795ef871f7b",
+                "reference": "df1650b6d2a79f74a1ba6ff2e27ce795ef871f7b",
                 "shasum": ""
             },
             "require": {
@@ -316,7 +316,7 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+9.0.0+bedrock-1.18.30"
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v2+9.0.0+bedrock-1.18.30"
             },
             "time": "2022-04-20T12:44:11+00:00"
         },
