@@ -35,9 +35,8 @@ final class VersionInfo{
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "stable";
 	
-	public const LUNA_VERSION = "1.3.5";
-	public const PROTOCL_VERSION = 503;
-	public const MINECRAFT_VERSION = "1.18.31";
+	public const CLIENT_TYPE = "Luna X";
+	public const CLIENT_VERSION = "1.4.0";
 
 	private function __construct(){
 		//NOOP

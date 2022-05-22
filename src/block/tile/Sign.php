@@ -100,7 +100,7 @@ class Sign extends Spawnable{
 		}
 		$nbt->setInt(self::TAG_TEXT_COLOR, Binary::signInt($this->text->getBaseColor()->toARGB()));
 		$nbt->setByte(self::TAG_GLOWING_TEXT, $this->text->isGlowing() ? 1 : 0);
-		$nbt->setByte(self::TAG_LEGACY_BUG_RESOLVE, 1);
+		$nbt->setByte(self::TAG_LEGACY_BUG_RESOLVE, $this->text->isGlowing() ? 1 : 0);
 	}
 
 	public function getText() : SignText{
@@ -131,6 +131,6 @@ class Sign extends Spawnable{
 		$nbt->setString(self::TAG_TEXT_BLOB, implode("\n", $this->text->getLines()));
 		$nbt->setInt(self::TAG_TEXT_COLOR, Binary::signInt($this->text->getBaseColor()->toARGB()));
 		$nbt->setByte(self::TAG_GLOWING_TEXT, $this->text->isGlowing() ? 1 : 0);
-		$nbt->setByte(self::TAG_LEGACY_BUG_RESOLVE, 1); //workaround for glowing text
+		$nbt->setByte(self::TAG_LEGACY_BUG_RESOLVE, $this->text->isGlowing() ? 1 : 0); //workaround for glowing text
 	}
 }
