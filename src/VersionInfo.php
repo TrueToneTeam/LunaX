@@ -30,10 +30,13 @@ use function is_int;
 use function str_repeat;
 
 final class VersionInfo{
-	public const NAME = "PocketMine-MP";
+	public const NAME = "Luna X(Coin)";
 	public const BASE_VERSION = "4.4.0-BETA2";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "beta";
+
+	public const CLIENT_TYPE = "Luna X";
+	public const CLIENT_VERSION = "2.0.0";
 
 	private function __construct(){
 		//NOOP
