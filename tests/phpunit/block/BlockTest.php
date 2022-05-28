@@ -41,7 +41,7 @@ class BlockTest extends TestCase{
 	 * Test registering a block which would overwrite another block, without forcing it
 	 */
 	public function testAccidentalOverrideBlock() : void{
-		$block = new MyCustomBlock(new BlockIdentifier(BlockLegacyIds::COBBLESTONE, 0), "Cobblestone", BlockBreakInfo::instant());
+		$block = new MyCustomBlock(new BlockIdentifier(BlockTypeIds::COBBLESTONE, BlockLegacyIds::COBBLESTONE, 0), "Cobblestone", BlockBreakInfo::instant());
 		$this->expectException(\InvalidArgumentException::class);
 		$this->blockFactory->register($block);
 	}
@@ -50,7 +50,7 @@ class BlockTest extends TestCase{
 	 * Test registering a block deliberately overwriting another block works as expected
 	 */
 	public function testDeliberateOverrideBlock() : void{
-		$block = new MyCustomBlock(new BlockIdentifier(BlockLegacyIds::COBBLESTONE, 0), "Cobblestone", BlockBreakInfo::instant());
+		$block = new MyCustomBlock(new BlockIdentifier(BlockTypeIds::COBBLESTONE, BlockLegacyIds::COBBLESTONE, 0), "Cobblestone", BlockBreakInfo::instant());
 		$this->blockFactory->register($block, true);
 		self::assertInstanceOf(MyCustomBlock::class, $this->blockFactory->get($block->getId(), 0));
 	}
@@ -61,7 +61,7 @@ class BlockTest extends TestCase{
 	public function testRegisterNewBlock() : void{
 		for($i = 0; $i < 256; ++$i){
 			if(!$this->blockFactory->isRegistered($i)){
-				$b = new StrangeNewBlock(new BlockIdentifier($i, 0), "Strange New Block", BlockBreakInfo::instant());
+				$b = new StrangeNewBlock(new BlockIdentifier(BlockTypeIds::FIRST_UNUSED_BLOCK_ID, $i, 0), "Strange New Block", BlockBreakInfo::instant());
 				$this->blockFactory->register($b);
 				self::assertInstanceOf(StrangeNewBlock::class, $this->blockFactory->get($b->getId(), 0));
 				return;
@@ -72,19 +72,11 @@ class BlockTest extends TestCase{
 	}
 
 	/**
-	 * Verifies that blocks with IDs larger than 255 can't be registered
-	 */
-	public function testRegisterIdTooLarge() : void{
-		self::expectException(\RuntimeException::class);
-		$this->blockFactory->register(new OutOfBoundsBlock(new BlockIdentifier(25555, 0), "Out Of Bounds Block", BlockBreakInfo::instant()));
-	}
-
-	/**
 	 * Verifies that blocks with IDs smaller than 0 can't be registered
 	 */
 	public function testRegisterIdTooSmall() : void{
-		self::expectException(\RuntimeException::class);
-		$this->blockFactory->register(new OutOfBoundsBlock(new BlockIdentifier(-1, 0), "Out Of Bounds Block", BlockBreakInfo::instant()));
+		self::expectException(\InvalidArgumentException::class);
+		$this->blockFactory->register(new OutOfBoundsBlock(new BlockIdentifier(-1, -1, 0), "Out Of Bounds Block", BlockBreakInfo::instant()));
 	}
 
 	/**
@@ -127,7 +119,7 @@ class BlockTest extends TestCase{
 	public function testBlockIds() : void{
 		for($i = 0; $i < 256; ++$i){
 			$b = $this->blockFactory->get($i, 0);
-			self::assertContains($i, $b->getIdInfo()->getAllBlockIds());
+			self::assertContains($i, $b->getIdInfo()->getAllLegacyBlockIds());
 		}
 	}
 
@@ -137,7 +129,6 @@ class BlockTest extends TestCase{
 	 */
 	public function testLightFiltersValid() : void{
 		foreach($this->blockFactory->lightFilter as $id => $value){
-			self::assertNotNull($value, "Light filter value missing for $id");
 			self::assertLessThanOrEqual(15, $value, "Light filter value for $id is larger than the expected 15");
 			self::assertGreaterThan(0, $value, "Light filter value for $id must be larger than 0");
 		}
@@ -151,8 +142,13 @@ class BlockTest extends TestCase{
 		$knownStates = $list["knownStates"];
 		$remaps = $list["remaps"];
 
-		$states = $this->blockFactory->getAllKnownStates();
-		foreach($states as $k => $state){
+		$states = [];
+		for($k = 0; $k < 1024 << Block::INTERNAL_METADATA_BITS; $k++){
+			$state = $this->blockFactory->fromFullBlock($k);
+			if($state instanceof UnknownBlock){
+				continue;
+			}
+			$states[$k] = $state;
 			if($state->getFullId() !== $k){
 				self::assertArrayHasKey($k, $remaps, "New remap of state $k (" . $state->getName() . ") - consistency check may need regenerating");
 				self::assertSame($state->getFullId(), $remaps[$k], "Mismatched full IDs of remapped state $k");

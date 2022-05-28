@@ -54,7 +54,7 @@ final class WallCoralFan extends BaseCoral{
 
 		$coralTypeFlag = $stateMeta & BlockLegacyMetadata::CORAL_FAN_HANG_TYPE_MASK;
 		switch($id){
-			case $this->idInfoFlattened->getBlockId():
+			case $this->idInfoFlattened->getLegacyBlockId():
 				$this->coralType = $coralTypeFlag === BlockLegacyMetadata::CORAL_FAN_HANG_TUBE ? CoralType::TUBE() : CoralType::BRAIN();
 				break;
 			case $this->idInfoFlattened->getAdditionalId(0):
@@ -73,7 +73,7 @@ final class WallCoralFan extends BaseCoral{
 
 	public function getId() : int{
 		if($this->coralType->equals(CoralType::TUBE()) || $this->coralType->equals(CoralType::BRAIN())){
-			return $this->idInfoFlattened->getBlockId();
+			return $this->idInfoFlattened->getLegacyBlockId();
 		}elseif($this->coralType->equals(CoralType::BUBBLE()) || $this->coralType->equals(CoralType::FIRE())){
 			return $this->idInfoFlattened->getAdditionalId(0);
 		}elseif($this->coralType->equals(CoralType::HORN())){
@@ -113,7 +113,7 @@ final class WallCoralFan extends BaseCoral{
 
 	public function place(BlockTransaction $tx, Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, ?Player $player = null) : bool{
 		$axis = Facing::axis($face);
-		if(($axis !== Axis::X && $axis !== Axis::Z) || !$blockClicked->isSolid()){
+		if(($axis !== Axis::X && $axis !== Axis::Z) || !$this->canBeSupportedBy($blockClicked, $face)){
 			return false;
 		}
 		$this->facing = $face;
@@ -122,10 +122,14 @@ final class WallCoralFan extends BaseCoral{
 
 	public function onNearbyBlockChange() : void{
 		$world = $this->position->getWorld();
-		if(!$world->getBlock($this->position->getSide(Facing::opposite($this->facing)))->isSolid()){
+		if(!$this->canBeSupportedBy($world->getBlock($this->position->getSide(Facing::opposite($this->facing))), $this->facing)){
 			$world->useBreakOn($this->position);
 		}else{
 			parent::onNearbyBlockChange();
 		}
+	}
+
+	private function canBeSupportedBy(Block $block, int $face) : bool{
+		return $block->getSupportType($face)->hasCenterSupport();
 	}
 }

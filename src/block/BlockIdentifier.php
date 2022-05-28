@@ -27,44 +27,60 @@ use pocketmine\block\tile\Tile;
 use pocketmine\utils\Utils;
 
 class BlockIdentifier{
-
-	private int $blockId;
-	private int $variant;
-	private ?int $itemId;
-	/** @phpstan-var class-string<Tile>|null */
-	private ?string $tileClass;
-
 	/**
 	 * @phpstan-param class-string<Tile>|null $tileClass
 	 */
-	public function __construct(int $blockId, int $variant, ?int $itemId = null, ?string $tileClass = null){
-		$this->blockId = $blockId;
-		$this->variant = $variant;
-		$this->itemId = $itemId;
+	public function __construct(
+		private int $blockTypeId,
+		private int $legacyBlockId,
+		private int $legacyVariant,
+		private ?int $legacyItemId = null,
+		private ?string $tileClass = null
+	){
+		if($blockTypeId < 0){
+			throw new \InvalidArgumentException("Block type ID may not be negative");
+		}
+		if($legacyBlockId < 0){
+			throw new \InvalidArgumentException("Legacy block ID may not be negative");
+		}
+		if($legacyVariant < 0){
+			throw new \InvalidArgumentException("Legacy block variant may not be negative");
+		}
 
 		if($tileClass !== null){
 			Utils::testValidInstance($tileClass, Tile::class);
 		}
-		$this->tileClass = $tileClass;
 	}
 
-	public function getBlockId() : int{
-		return $this->blockId;
+	public function getBlockTypeId() : int{ return $this->blockTypeId; }
+
+	/**
+	 * @deprecated
+	 */
+	public function getLegacyBlockId() : int{
+		return $this->legacyBlockId;
 	}
 
 	/**
+	 * @deprecated
 	 * @return int[]
 	 */
-	public function getAllBlockIds() : array{
-		return [$this->blockId];
+	public function getAllLegacyBlockIds() : array{
+		return [$this->legacyBlockId];
 	}
 
-	public function getVariant() : int{
-		return $this->variant;
+	/**
+	 * @deprecated
+	 */
+	public function getLegacyVariant() : int{
+		return $this->legacyVariant;
 	}
 
-	public function getItemId() : int{
-		return $this->itemId ?? ($this->blockId > 255 ? 255 - $this->blockId : $this->blockId);
+	/**
+	 * @deprecated
+	 */
+	public function getLegacyItemId() : int{
+		return $this->legacyItemId ?? ($this->legacyBlockId > 255 ? 255 - $this->legacyBlockId : $this->legacyBlockId);
 	}
 
 	/**

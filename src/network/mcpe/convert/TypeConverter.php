@@ -22,11 +22,11 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\convert;
 
-use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\inventory\AnvilInventory;
 use pocketmine\block\inventory\CraftingTableInventory;
 use pocketmine\block\inventory\EnchantInventory;
 use pocketmine\block\inventory\LoomInventory;
+use pocketmine\block\inventory\StonecutterInventory;
 use pocketmine\inventory\transaction\action\CreateItemAction;
 use pocketmine\inventory\transaction\action\DestroyItemAction;
 use pocketmine\inventory\transaction\action\DropItemAction;
@@ -60,8 +60,7 @@ class TypeConverter{
 	private const PM_ID_TAG = "___Id___";
 	private const PM_META_TAG = "___Meta___";
 
-	/** @var int */
-	private $shieldRuntimeId;
+	private int $shieldRuntimeId;
 
 	public function __construct(){
 		//TODO: inject stuff via constructor
@@ -142,20 +141,18 @@ class TypeConverter{
 			$nbt = clone $itemStack->getNamedTag();
 		}
 
-		$isBlockItem = $itemStack->getId() < 256;
-
 		$idMeta = ItemTranslator::getInstance()->toNetworkIdQuiet($itemStack->getId(), $itemStack->getMeta());
 		if($idMeta === null){
 			//Display unmapped items as INFO_UPDATE, but stick something in their NBT to make sure they don't stack with
 			//other unmapped items.
-			[$id, $meta] = ItemTranslator::getInstance()->toNetworkId(ItemIds::INFO_UPDATE, 0);
+			[$id, $meta, $blockRuntimeId] = ItemTranslator::getInstance()->toNetworkId(ItemIds::INFO_UPDATE, 0);
 			if($nbt === null){
 				$nbt = new CompoundTag();
 			}
 			$nbt->setInt(self::PM_ID_TAG, $itemStack->getId());
 			$nbt->setInt(self::PM_META_TAG, $itemStack->getMeta());
 		}else{
-			[$id, $meta] = $idMeta;
+			[$id, $meta, $blockRuntimeId] = $idMeta;
 
 			if($itemStack instanceof Durable && $itemStack->getDamage() > 0){
 				if($nbt !== null){
@@ -167,22 +164,6 @@ class TypeConverter{
 					$nbt = new CompoundTag();
 				}
 				$nbt->setInt(self::DAMAGE_TAG, $itemStack->getDamage());
-			}elseif($isBlockItem && $itemStack->getMeta() !== 0){
-				//TODO HACK: This foul-smelling code ensures that we can correctly deserialize an item when the
-				//client sends it back to us, because as of 1.16.220, blockitems quietly discard their metadata
-				//client-side. Aside from being very annoying, this also breaks various server-side behaviours.
-				if($nbt === null){
-					$nbt = new CompoundTag();
-				}
-				$nbt->setInt(self::PM_META_TAG, $itemStack->getMeta());
-			}
-		}
-
-		$blockRuntimeId = 0;
-		if($isBlockItem){
-			$block = $itemStack->getBlock();
-			if($block->getId() !== BlockLegacyIds::AIR){
-				$blockRuntimeId = RuntimeBlockMapping::getInstance()->toRuntimeId($block->getFullId());
 			}
 		}
 
@@ -207,13 +188,20 @@ class TypeConverter{
 		}
 		$compound = $itemStack->getNbt();
 
-		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkId($itemStack->getId(), $itemStack->getMeta());
+		[$id, $meta] = ItemTranslator::getInstance()->fromNetworkId($itemStack->getId(), $itemStack->getMeta(), $itemStack->getBlockRuntimeId());
 
 		if($compound !== null){
 			$compound = clone $compound;
-			if(($idTag = $compound->getTag(self::PM_ID_TAG)) instanceof IntTag){
-				$id = $idTag->getValue();
-				$compound->removeTag(self::PM_ID_TAG);
+
+			if($id === ItemIds::INFO_UPDATE && $meta === 0){
+				if(($idTag = $compound->getTag(self::PM_ID_TAG)) instanceof IntTag){
+					$id = $idTag->getValue();
+					$compound->removeTag(self::PM_ID_TAG);
+				}
+				if(($metaTag = $compound->getTag(self::PM_META_TAG)) instanceof IntTag){
+					$meta = $metaTag->getValue();
+					$compound->removeTag(self::PM_META_TAG);
+				}
 			}
 			if(($damageTag = $compound->getTag(self::DAMAGE_TAG)) instanceof IntTag){
 				$meta = $damageTag->getValue();
@@ -222,12 +210,6 @@ class TypeConverter{
 					$compound->removeTag(self::DAMAGE_TAG_CONFLICT_RESOLUTION);
 					$compound->setTag(self::DAMAGE_TAG, $conflicted);
 				}
-			}elseif(($metaTag = $compound->getTag(self::PM_META_TAG)) instanceof IntTag){
-				//TODO HACK: This foul-smelling code ensures that we can correctly deserialize an item when the
-				//client sends it back to us, because as of 1.16.220, blockitems quietly discard their metadata
-				//client-side. Aside from being very annoying, this also breaks various server-side behaviours.
-				$meta = $metaTag->getValue();
-				$compound->removeTag(self::PM_META_TAG);
 			}
 			if($compound->count() === 0){
 				$compound = null;
@@ -284,6 +266,7 @@ class TypeConverter{
 							$current instanceof AnvilInventory => UIInventorySlotOffset::ANVIL,
 							$current instanceof EnchantInventory => UIInventorySlotOffset::ENCHANTING_TABLE,
 							$current instanceof LoomInventory => UIInventorySlotOffset::LOOM,
+							$current instanceof StonecutterInventory => [UIInventorySlotOffset::STONE_CUTTER_INPUT => StonecutterInventory::SLOT_INPUT],
 							$current instanceof CraftingTableInventory => UIInventorySlotOffset::CRAFTING3X3_INPUT,
 							default => null
 						};

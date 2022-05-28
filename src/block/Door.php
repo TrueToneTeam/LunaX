@@ -25,7 +25,7 @@ namespace pocketmine\block;
 
 use pocketmine\block\utils\BlockDataSerializer;
 use pocketmine\block\utils\HorizontalFacingTrait;
-use pocketmine\block\utils\PoweredByRedstoneTrait;
+use pocketmine\block\utils\SupportType;
 use pocketmine\item\Item;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
@@ -36,7 +36,6 @@ use pocketmine\world\sound\DoorSound;
 
 class Door extends Transparent{
 	use HorizontalFacingTrait;
-	use PoweredByRedstoneTrait;
 
 	protected bool $top = false;
 	protected bool $hingeRight = false;
@@ -45,8 +44,7 @@ class Door extends Transparent{
 	protected function writeStateToMeta() : int{
 		if($this->top){
 			return BlockLegacyMetadata::DOOR_FLAG_TOP |
-				($this->hingeRight ? BlockLegacyMetadata::DOOR_TOP_FLAG_RIGHT : 0) |
-				($this->powered ? BlockLegacyMetadata::DOOR_TOP_FLAG_POWERED : 0);
+				($this->hingeRight ? BlockLegacyMetadata::DOOR_TOP_FLAG_RIGHT : 0);
 		}
 
 		return BlockDataSerializer::writeLegacyHorizontalFacing(Facing::rotateY($this->facing, true)) | ($this->open ? BlockLegacyMetadata::DOOR_BOTTOM_FLAG_OPEN : 0);
@@ -56,7 +54,6 @@ class Door extends Transparent{
 		$this->top = ($stateMeta & BlockLegacyMetadata::DOOR_FLAG_TOP) !== 0;
 		if($this->top){
 			$this->hingeRight = ($stateMeta & BlockLegacyMetadata::DOOR_TOP_FLAG_RIGHT) !== 0;
-			$this->powered = ($stateMeta & BlockLegacyMetadata::DOOR_TOP_FLAG_POWERED) !== 0;
 		}else{
 			$this->facing = Facing::rotateY(BlockDataSerializer::readLegacyHorizontalFacing($stateMeta & 0x03), false);
 			$this->open = ($stateMeta & BlockLegacyMetadata::DOOR_BOTTOM_FLAG_OPEN) !== 0;
@@ -78,7 +75,6 @@ class Door extends Transparent{
 				$this->open = $other->open;
 			}else{
 				$this->hingeRight = $other->hingeRight;
-				$this->powered = $other->powered;
 			}
 		}
 	}
@@ -119,8 +115,12 @@ class Door extends Transparent{
 		return [AxisAlignedBB::one()->trim($this->open ? Facing::rotateY($this->facing, !$this->hingeRight) : $this->facing, 327 / 400)];
 	}
 
+	public function getSupportType(int $facing) : SupportType{
+		return SupportType::NONE();
+	}
+
 	public function onNearbyBlockChange() : void{
-		if($this->getSide(Facing::DOWN)->getId() === BlockLegacyIds::AIR){ //Replace with common break method
+		if(!$this->canBeSupportedBy($this->getSide(Facing::DOWN)) && !$this->getSide(Facing::DOWN) instanceof Door){ //Replace with common break method
 			$this->position->getWorld()->useBreakOn($this->position); //this will delete both halves if they exist
 		}
 	}
@@ -129,7 +129,7 @@ class Door extends Transparent{
 		if($face === Facing::UP){
 			$blockUp = $this->getSide(Facing::UP);
 			$blockDown = $this->getSide(Facing::DOWN);
-			if(!$blockUp->canBeReplaced() || $blockDown->isTransparent()){
+			if(!$blockUp->canBeReplaced() || !$this->canBeSupportedBy($blockDown)){
 				return false;
 			}
 
@@ -183,5 +183,9 @@ class Door extends Transparent{
 			return [$this, $other];
 		}
 		return parent::getAffectedBlocks();
+	}
+
+	private function canBeSupportedBy(Block $block) : bool{
+		return $block->getSupportType(Facing::UP)->hasEdgeSupport();
 	}
 }

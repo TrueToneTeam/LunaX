@@ -29,6 +29,7 @@ namespace pocketmine\block;
 use pocketmine\block\tile\Spawnable;
 use pocketmine\block\tile\Tile;
 use pocketmine\block\utils\InvalidBlockStateException;
+use pocketmine\block\utils\SupportType;
 use pocketmine\entity\Entity;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\Item;
@@ -64,8 +65,8 @@ class Block{
 	 * @param string          $name English name of the block type (TODO: implement translations)
 	 */
 	public function __construct(BlockIdentifier $idInfo, string $name, BlockBreakInfo $breakInfo){
-		if(($idInfo->getVariant() & $this->getStateBitmask()) !== 0){
-			throw new \InvalidArgumentException("Variant 0x" . dechex($idInfo->getVariant()) . " collides with state bitmask 0x" . dechex($this->getStateBitmask()));
+		if(($idInfo->getLegacyVariant() & $this->getStateBitmask()) !== 0){
+			throw new \InvalidArgumentException("Variant 0x" . dechex($idInfo->getLegacyVariant()) . " collides with state bitmask 0x" . dechex($this->getStateBitmask()));
 		}
 		$this->idInfo = $idInfo;
 		$this->fallbackName = $name;
@@ -85,8 +86,11 @@ class Block{
 		return $this->fallbackName;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getId() : int{
-		return $this->idInfo->getBlockId();
+		return $this->idInfo->getLegacyBlockId();
 	}
 
 	/**
@@ -98,15 +102,18 @@ class Block{
 
 	public function asItem() : Item{
 		return ItemFactory::getInstance()->get(
-			$this->idInfo->getItemId(),
-			$this->idInfo->getVariant() | $this->writeStateToItemMeta()
+			$this->idInfo->getLegacyItemId(),
+			$this->idInfo->getLegacyVariant() | $this->writeStateToItemMeta()
 		);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getMeta() : int{
 		$stateMeta = $this->writeStateToMeta();
 		assert(($stateMeta & ~$this->getStateBitmask()) === 0);
-		return $this->idInfo->getVariant() | $stateMeta;
+		return $this->idInfo->getLegacyVariant() | $stateMeta;
 	}
 
 	protected function writeStateToItemMeta() : int{
@@ -152,7 +159,7 @@ class Block{
 				$oldTile->close();
 				$oldTile = null;
 			}elseif($oldTile instanceof Spawnable){
-				$oldTile->setDirty(); //destroy old network cache
+				$oldTile->clearSpawnCompoundCache(); //destroy old network cache
 			}
 		}
 		if($oldTile === null && $tileType !== null){
@@ -170,7 +177,7 @@ class Block{
 	 * powered/unpowered, etc.
 	 */
 	public function getTypeId() : int{
-		return ($this->idInfo->getBlockId() << Block::INTERNAL_METADATA_BITS) | $this->idInfo->getVariant();
+		return $this->idInfo->getBlockTypeId();
 	}
 
 	/**
@@ -608,6 +615,10 @@ class Block{
 	 */
 	protected function recalculateCollisionBoxes() : array{
 		return [AxisAlignedBB::one()];
+	}
+
+	public function getSupportType(int $facing) : SupportType{
+		return SupportType::FULL();
 	}
 
 	public function isFullCube() : bool{

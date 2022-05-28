@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\block;
 
+use pocketmine\block\utils\SupportType;
+use pocketmine\math\Axis;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
 
@@ -35,16 +37,31 @@ class Wall extends Transparent{
 	public function readStateFromWorld() : void{
 		parent::readStateFromWorld();
 
+		$this->recalculateConnections();
+	}
+
+	protected function recalculateConnections() : bool{
+		$changed = 0;
 		foreach(Facing::HORIZONTAL as $facing){
 			$block = $this->getSide($facing);
 			if($block instanceof static || $block instanceof FenceGate || ($block->isSolid() && !$block->isTransparent())){
-				$this->connections[$facing] = $facing;
-			}else{
+				if(!isset($this->connections[$facing])){
+					$this->connections[$facing] = $facing;
+					$changed++;
+				}
+			}elseif(isset($this->connections[$facing])){
 				unset($this->connections[$facing]);
+				$changed++;
 			}
 		}
 
-		$this->up = $this->getSide(Facing::UP)->getId() !== BlockLegacyIds::AIR;
+		$up = $this->getSide(Facing::UP)->getId() !== BlockLegacyIds::AIR;
+		if($up !== $this->up){
+			$this->up = $up;
+			$changed++;
+		}
+
+		return $changed > 0;
 	}
 
 	protected function recalculateCollisionBoxes() : array{
@@ -75,5 +92,9 @@ class Wall extends Transparent{
 				->trim(Facing::WEST, $west ? 0 : $inset)
 				->trim(Facing::EAST, $east ? 0 : $inset)
 		];
+	}
+
+	public function getSupportType(int $facing) : SupportType{
+		return Facing::axis($facing) === Axis::Y ? SupportType::CENTER() : SupportType::NONE();
 	}
 }
