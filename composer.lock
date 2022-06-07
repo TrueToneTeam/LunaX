@@ -279,12 +279,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "5f939f3e5e08d7d5aa17e829754ddb30fe5a91d7"
+                "reference": "13e6e175acd759b6dc0b1fc1469ad2bcf4e51fc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/5f939f3e5e08d7d5aa17e829754ddb30fe5a91d7",
-                "reference": "5f939f3e5e08d7d5aa17e829754ddb30fe5a91d7",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/13e6e175acd759b6dc0b1fc1469ad2bcf4e51fc9",
+                "reference": "13e6e175acd759b6dc0b1fc1469ad2bcf4e51fc9",
                 "shasum": ""
             },
             "require": {
