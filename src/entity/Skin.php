@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -54,16 +54,11 @@ final class Skin{
 		SkinImage::SKIN_512_512_SIZE
 	];
 
-	/** @var string */
-	private $skinId;
-	/** @var string */
-	private $skinData;
-	/** @var string */
-	private $capeData;
-	/** @var string */
-	private $geometryName;
-	/** @var string */
-	private $geometryData;
+	private string $skinId;
+	private string $skinData;
+	private string $capeData;
+	private string $geometryName;
+	private string $geometryData;
 
 	/** @var string */
 	private $playFabId = "";

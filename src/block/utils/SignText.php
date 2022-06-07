@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -37,7 +37,7 @@ class SignText{
 	public const LINE_COUNT = 4;
 
 	/** @var string[] */
-	private $lines;
+	private array $lines;
 
 	private Color $baseColor;
 

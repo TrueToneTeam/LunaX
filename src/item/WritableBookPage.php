@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -27,10 +27,8 @@ use pocketmine\utils\Utils;
 
 class WritableBookPage{
 
-	/** @var string */
-	private $text;
-	/** @var string */
-	private $photoName;
+	private string $text;
+	private string $photoName;
 
 	public function __construct(string $text, string $photoName = ""){
 		//TODO: data validation

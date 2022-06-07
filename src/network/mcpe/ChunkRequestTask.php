@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -49,8 +49,7 @@ class ChunkRequestTask extends AsyncTask{
 	/** @var Compressor */
 	protected $compressor;
 
-	/** @var string */
-	private $tiles = "";
+	private string $tiles;
 
 	/**
 	 * @phpstan-param (\Closure() : void)|null $onError

@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -33,9 +33,6 @@ use function count;
 use function spl_object_id;
 
 class EffectManager{
-
-	/** @var Living */
-	private $entity;
 
 	/** @var EffectInstance[] */
 	protected $effects = [];
@@ -56,8 +53,9 @@ class EffectManager{
 	 */
 	protected $effectRemoveHooks;
 
-	public function __construct(Living $entity){
-		$this->entity = $entity;
+	public function __construct(
+		private Living $entity
+	){
 		$this->bubbleColor = new Color(0, 0, 0, 0);
 		$this->effectAddHooks = new ObjectSet();
 		$this->effectRemoveHooks = new ObjectSet();
