@@ -31,12 +31,12 @@ use function str_repeat;
 
 final class VersionInfo{
 	public const NAME = "Luan X(Master)";
-	public const BASE_VERSION = "4.4.2";
+	public const BASE_VERSION = "4.5.1";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "stable";
 	
 	public const CLIENT_TYPE = "Luna X";
-	public const CLIENT_VERSION = "1.4.0";
+	public const CLIENT_VERSION = "1.5.0";
 
 	private function __construct(){
 		//NOOP
