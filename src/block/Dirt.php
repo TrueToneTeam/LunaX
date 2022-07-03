@@ -17,12 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Hoe;
 use pocketmine\item\Item;
 use pocketmine\math\Facing;
@@ -31,23 +33,16 @@ use pocketmine\player\Player;
 use pocketmine\world\sound\ItemUseOnBlockSound;
 
 class Dirt extends Opaque{
-
 	protected bool $coarse = false;
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->coarse = ($stateMeta & BlockLegacyMetadata::DIRT_FLAG_COARSE) !== 0;
+	public function getRequiredTypeDataBits() : int{ return 1; }
+
+	protected function decodeType(BlockDataReader $r) : void{
+		$this->coarse = $r->readBool();
 	}
 
-	protected function writeStateToMeta() : int{
-		return $this->coarse ? BlockLegacyMetadata::DIRT_FLAG_COARSE : 0;
-	}
-
-	protected function writeStateToItemMeta() : int{
-		return $this->writeStateToMeta();
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1;
+	protected function encodeType(BlockDataWriter $w) : void{
+		$w->writeBool($this->coarse);
 	}
 
 	public function isCoarse() : bool{ return $this->coarse; }

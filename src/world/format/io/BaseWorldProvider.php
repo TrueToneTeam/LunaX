@@ -17,14 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\world\format\io;
 
-use pocketmine\data\bedrock\blockstate\BlockStateData;
-use pocketmine\data\bedrock\blockstate\BlockTypeNames;
+use pocketmine\data\bedrock\block\BlockStateData;
+use pocketmine\data\bedrock\block\BlockTypeNames;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\world\format\io\exception\CorruptedWorldException;
 use pocketmine\world\format\io\exception\UnsupportedWorldFormatException;
@@ -33,17 +33,15 @@ use pocketmine\world\WorldException;
 use function file_exists;
 
 abstract class BaseWorldProvider implements WorldProvider{
-	/** @var string */
-	protected $path;
-	/** @var WorldData */
-	protected $worldData;
+	protected WorldData $worldData;
 
-	public function __construct(string $path){
+	public function __construct(
+		protected string $path
+	){
 		if(!file_exists($path)){
 			throw new WorldException("World does not exist");
 		}
 
-		$this->path = $path;
 		$this->worldData = $this->loadLevelData();
 	}
 
@@ -58,11 +56,11 @@ abstract class BaseWorldProvider implements WorldProvider{
 
 		//TODO: this should be dependency-injected so it can be replaced, but that would break BC
 		//also, we want it to be lazy-loaded ...
-		$legacyBlockStateMapper = GlobalBlockStateHandlers::getLegacyBlockStateMapper();
+		$blockDataUpgrader = GlobalBlockStateHandlers::getUpgrader();
 		$blockStateDeserializer = GlobalBlockStateHandlers::getDeserializer();
 		$newPalette = [];
 		foreach($palette as $k => $legacyIdMeta){
-			$newStateData = $legacyBlockStateMapper->fromIntIdMeta($legacyIdMeta >> 4, $legacyIdMeta & 0xf);
+			$newStateData = $blockDataUpgrader->upgradeIntIdMeta($legacyIdMeta >> 4, $legacyIdMeta & 0xf);
 			if($newStateData === null){
 				//TODO: remember data for unknown states so we can implement them later
 				$newStateData = new BlockStateData(BlockTypeNames::INFO_UPDATE, CompoundTag::create(), BlockStateData::CURRENT_VERSION);

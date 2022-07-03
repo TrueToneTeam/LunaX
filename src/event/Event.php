@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -33,8 +33,7 @@ abstract class Event{
 
 	private static int $eventCallDepth = 1;
 
-	/** @var string|null */
-	protected $eventName = null;
+	protected ?string $eventName = null;
 
 	final public function getEventName() : string{
 		return $this->eventName ?? get_class($this);

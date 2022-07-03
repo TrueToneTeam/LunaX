@@ -17,21 +17,54 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\crafting;
 
+use pocketmine\data\bedrock\item\ItemTypeDeserializeException;
+use pocketmine\data\bedrock\item\upgrade\LegacyItemIdToStringIdMap;
+use pocketmine\data\SavedDataLoadingException;
 use pocketmine\item\Item;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Utils;
+use pocketmine\world\format\io\GlobalItemDataHandlers;
 use function array_map;
 use function file_get_contents;
 use function is_array;
+use function is_int;
 use function json_decode;
 
 final class CraftingManagerFromDataHelper{
+	/**
+	 * @param mixed[] $data
+	 */
+	private static function deserializeIngredient(array $data) : ?RecipeIngredient{
+		if(!isset($data["id"]) || !is_int($data["id"])){
+			throw new \InvalidArgumentException("Invalid input data, expected int ID");
+		}
+		if(isset($data["damage"]) && $data["damage"] === -1){
+			try{
+				$typeData = GlobalItemDataHandlers::getUpgrader()->upgradeItemTypeDataInt($data["id"], 0, 1, null);
+			}catch(ItemTypeDeserializeException){
+				//probably unknown item
+				return null;
+			}
+
+			return new MetaWildcardRecipeIngredient($typeData->getTypeData()->getName());
+		}
+
+		//TODO: we need to stop using jsonDeserialize for this
+		try{
+			$item = Item::legacyJsonDeserialize($data);
+		}catch(SavedDataLoadingException){
+			//unknown item
+			return null;
+		}
+
+		return new ExactRecipeIngredient($item);
+	}
 
 	public static function make(string $filePath) : CraftingManager{
 		$recipes = json_decode(Utils::assumeNotFalse(file_get_contents($filePath), "Missing required resource file"), true);
@@ -40,7 +73,8 @@ final class CraftingManagerFromDataHelper{
 		}
 		$result = new CraftingManager();
 
-		$itemDeserializerFunc = \Closure::fromCallable([Item::class, 'jsonDeserialize']);
+		$ingredientDeserializerFunc = \Closure::fromCallable([self::class, "deserializeIngredient"]);
+		$itemDeserializerFunc = \Closure::fromCallable([Item::class, 'legacyJsonDeserialize']);
 
 		foreach($recipes["shapeless"] as $recipe){
 			$recipeType = match($recipe["block"]){
@@ -52,9 +86,23 @@ final class CraftingManagerFromDataHelper{
 			if($recipeType === null){
 				continue;
 			}
+			$inputs = [];
+			foreach($recipe["input"] as $inputData){
+				$input = $ingredientDeserializerFunc($inputData);
+				if($input === null){ //unknown input item
+					continue 2;
+				}
+				$inputs[] = $input;
+			}
+			try{
+				$outputs = array_map($itemDeserializerFunc, $recipe["output"]);
+			}catch(SavedDataLoadingException){
+				//unknown output item
+				continue;
+			}
 			$result->registerShapelessRecipe(new ShapelessRecipe(
-				array_map($itemDeserializerFunc, $recipe["input"]),
-				array_map($itemDeserializerFunc, $recipe["output"]),
+				$inputs,
+				$outputs,
 				$recipeType
 			));
 		}
@@ -62,10 +110,24 @@ final class CraftingManagerFromDataHelper{
 			if($recipe["block"] !== "crafting_table"){ //TODO: filter others out for now to avoid breaking economics
 				continue;
 			}
+			$inputs = [];
+			foreach($recipe["input"] as $symbol => $inputData){
+				$input = $ingredientDeserializerFunc($inputData);
+				if($input === null){ //unknown input item
+					continue 2;
+				}
+				$inputs[$symbol] = $input;
+			}
+			try{
+				$outputs = array_map($itemDeserializerFunc, $recipe["output"]);
+			}catch(SavedDataLoadingException){
+				//unknown output item
+				continue;
+			}
 			$result->registerShapedRecipe(new ShapedRecipe(
 				$recipe["shape"],
-				array_map($itemDeserializerFunc, $recipe["input"]),
-				array_map($itemDeserializerFunc, $recipe["output"])
+				$inputs,
+				$outputs
 			));
 		}
 		foreach($recipes["smelting"] as $recipe){
@@ -79,23 +141,54 @@ final class CraftingManagerFromDataHelper{
 			if($furnaceType === null){
 				continue;
 			}
+			try{
+				$output = Item::legacyJsonDeserialize($recipe["output"]);
+			}catch(SavedDataLoadingException){
+				continue;
+			}
+			$input = self::deserializeIngredient($recipe["input"]);
+			if($input === null){
+				continue;
+			}
 			$result->getFurnaceRecipeManager($furnaceType)->register(new FurnaceRecipe(
-				Item::jsonDeserialize($recipe["output"]),
-				Item::jsonDeserialize($recipe["input"]))
-			);
+				$output,
+				$input
+			));
 		}
 		foreach($recipes["potion_type"] as $recipe){
+			try{
+				$input = Item::legacyJsonDeserialize($recipe["input"]);
+				$ingredient = Item::legacyJsonDeserialize($recipe["ingredient"]);
+				$output = Item::legacyJsonDeserialize($recipe["output"]);
+			}catch(SavedDataLoadingException){
+				//unknown item
+				continue;
+			}
 			$result->registerPotionTypeRecipe(new PotionTypeRecipe(
-				Item::jsonDeserialize($recipe["input"]),
-				Item::jsonDeserialize($recipe["ingredient"]),
-				Item::jsonDeserialize($recipe["output"])
+				$input,
+				$ingredient,
+				$output
 			));
 		}
 		foreach($recipes["potion_container_change"] as $recipe){
+			try{
+				$ingredient = Item::legacyJsonDeserialize($recipe["ingredient"]);
+			}catch(SavedDataLoadingException){
+				//unknown item
+				continue;
+			}
+
+			//TODO: we'll be able to get rid of these conversions once the crafting data is updated
+			$inputId = LegacyItemIdToStringIdMap::getInstance()->legacyToString($recipe["input_item_id"]);
+			$outputId = LegacyItemIdToStringIdMap::getInstance()->legacyToString($recipe["output_item_id"]);
+			if($inputId === null || $outputId === null){
+				//unknown item
+				continue;
+			}
 			$result->registerPotionContainerChangeRecipe(new PotionContainerChangeRecipe(
-				$recipe["input_item_id"],
-				Item::jsonDeserialize($recipe["ingredient"]),
-				$recipe["output_item_id"]
+				$inputId,
+				$ingredient,
+				$outputId
 			));
 		}
 

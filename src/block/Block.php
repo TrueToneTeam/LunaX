@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -28,12 +28,13 @@ namespace pocketmine\block;
 
 use pocketmine\block\tile\Spawnable;
 use pocketmine\block\tile\Tile;
-use pocketmine\block\utils\InvalidBlockStateException;
 use pocketmine\block\utils\SupportType;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\entity\Entity;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemBlock;
 use pocketmine\math\Axis;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\RayTraceResult;
@@ -44,14 +45,12 @@ use pocketmine\world\BlockTransaction;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\Position;
 use pocketmine\world\World;
-use function assert;
 use function count;
-use function dechex;
 use const PHP_INT_MAX;
 
 class Block{
-	public const INTERNAL_METADATA_BITS = 4;
-	public const INTERNAL_METADATA_MASK = ~(~0 << self::INTERNAL_METADATA_BITS);
+	public const INTERNAL_STATE_DATA_BITS = 9;
+	public const INTERNAL_STATE_DATA_MASK = ~(~0 << self::INTERNAL_STATE_DATA_BITS);
 
 	protected BlockIdentifier $idInfo;
 	protected string $fallbackName;
@@ -65,9 +64,6 @@ class Block{
 	 * @param string          $name English name of the block type (TODO: implement translations)
 	 */
 	public function __construct(BlockIdentifier $idInfo, string $name, BlockBreakInfo $breakInfo){
-		if(($idInfo->getLegacyVariant() & $this->getStateBitmask()) !== 0){
-			throw new \InvalidArgumentException("Variant 0x" . dechex($idInfo->getLegacyVariant()) . " collides with state bitmask 0x" . dechex($this->getStateBitmask()));
-		}
 		$this->idInfo = $idInfo;
 		$this->fallbackName = $name;
 		$this->breakInfo = $breakInfo;
@@ -87,54 +83,92 @@ class Block{
 	}
 
 	/**
-	 * @deprecated
+	 * @internal
 	 */
-	public function getId() : int{
-		return $this->idInfo->getLegacyBlockId();
+	public function getStateId() : int{
+		return ($this->getTypeId() << self::INTERNAL_STATE_DATA_BITS) | $this->computeStateData();
+	}
+
+	public function asItem() : Item{
+		return new ItemBlock($this);
+	}
+
+	public function getRequiredTypeDataBits() : int{ return 0; }
+
+	public function getRequiredStateDataBits() : int{ return 0; }
+
+	final public function decodeTypeData(int $data) : void{
+		$typeBits = $this->getRequiredTypeDataBits();
+		$givenBits = $typeBits;
+		$reader = new BlockDataReader($givenBits, $data);
+
+		$this->decodeType($reader);
+		$readBits = $reader->getOffset();
+		if($typeBits !== $readBits){
+			throw new \LogicException("Exactly $typeBits bits of type data were provided, but $readBits were read");
+		}
+	}
+
+	final public function decodeStateData(int $data) : void{
+		$typeBits = $this->getRequiredTypeDataBits();
+		$stateBits = $this->getRequiredStateDataBits();
+		$givenBits = $typeBits + $stateBits;
+		$reader = new BlockDataReader($givenBits, $data);
+		$this->decodeTypeData($reader->readInt($typeBits));
+
+		$this->decodeState($reader);
+		$readBits = $reader->getOffset() - $typeBits;
+		if($stateBits !== $readBits){
+			throw new \LogicException("Exactly $stateBits bits of state data were provided, but $readBits were read");
+		}
+	}
+
+	protected function decodeType(BlockDataReader $r) : void{
+		//NOOP
+	}
+
+	protected function decodeState(BlockDataReader $r) : void{
+		//NOOP
+	}
+
+	final public function computeTypeData() : int{
+		$typeBits = $this->getRequiredTypeDataBits();
+		$requiredBits = $typeBits;
+		$writer = new BlockDataWriter($requiredBits);
+
+		$this->encodeType($writer);
+		$writtenBits = $writer->getOffset();
+		if($typeBits !== $writtenBits){
+			throw new \LogicException("Exactly $typeBits bits of type data were expected, but $writtenBits were written");
+		}
+
+		return $writer->getValue();
 	}
 
 	/**
 	 * @internal
 	 */
-	public function getFullId() : int{
-		return ($this->getId() << self::INTERNAL_METADATA_BITS) | $this->getMeta();
+	final public function computeStateData() : int{
+		$typeBits = $this->getRequiredTypeDataBits();
+		$stateBits = $this->getRequiredStateDataBits();
+		$requiredBits = $typeBits + $stateBits;
+		$writer = new BlockDataWriter($requiredBits);
+		$writer->writeInt($typeBits, $this->computeTypeData());
+
+		$this->encodeState($writer);
+		$writtenBits = $writer->getOffset() - $typeBits;
+		if($stateBits !== $writtenBits){
+			throw new \LogicException("Exactly $stateBits bits of state data were expected, but $writtenBits were written");
+		}
+
+		return $writer->getValue();
 	}
 
-	public function asItem() : Item{
-		return ItemFactory::getInstance()->get(
-			$this->idInfo->getLegacyItemId(),
-			$this->idInfo->getLegacyVariant() | $this->writeStateToItemMeta()
-		);
+	protected function encodeType(BlockDataWriter $w) : void{
+		//NOOP
 	}
 
-	/**
-	 * @deprecated
-	 */
-	public function getMeta() : int{
-		$stateMeta = $this->writeStateToMeta();
-		assert(($stateMeta & ~$this->getStateBitmask()) === 0);
-		return $this->idInfo->getLegacyVariant() | $stateMeta;
-	}
-
-	protected function writeStateToItemMeta() : int{
-		return 0;
-	}
-
-	/**
-	 * Returns a bitmask used to extract state bits from block metadata.
-	 */
-	public function getStateBitmask() : int{
-		return 0;
-	}
-
-	protected function writeStateToMeta() : int{
-		return 0;
-	}
-
-	/**
-	 * @throws InvalidBlockStateException
-	 */
-	public function readStateFromData(int $id, int $stateMeta) : void{
+	protected function encodeState(BlockDataWriter $w) : void{
 		//NOOP
 	}
 
@@ -150,7 +184,7 @@ class Block{
 	}
 
 	public function writeStateToWorld() : void{
-		$this->position->getWorld()->getOrLoadChunkAtPosition($this->position)->setFullBlock($this->position->x & Chunk::COORD_MASK, $this->position->y, $this->position->z & Chunk::COORD_MASK, $this->getFullId());
+		$this->position->getWorld()->getOrLoadChunkAtPosition($this->position)->setFullBlock($this->position->x & Chunk::COORD_MASK, $this->position->y, $this->position->z & Chunk::COORD_MASK, $this->getStateId());
 
 		$tileType = $this->idInfo->getTileClass();
 		$oldTile = $this->position->getWorld()->getTile($this->position);
@@ -182,9 +216,6 @@ class Block{
 
 	/**
 	 * Returns whether the given block has an equivalent type to this one. This compares the type IDs.
-	 *
-	 * Note: This ignores additional IDs used to represent additional states. This means that, for example, a lit
-	 * furnace and unlit furnace are considered the same type.
 	 */
 	public function isSameType(Block $other) : bool{
 		return $this->getTypeId() === $other->getTypeId();
@@ -194,7 +225,7 @@ class Block{
 	 * Returns whether the given block has the same type and properties as this block.
 	 */
 	public function isSameState(Block $other) : bool{
-		return $this->getFullId() === $other->getFullId();
+		return $this->getStateId() === $other->getStateId();
 	}
 
 	/**
@@ -551,7 +582,7 @@ class Block{
 	 * @return string
 	 */
 	public function __toString(){
-		return "Block[" . $this->getName() . "] (" . $this->getId() . ":" . $this->getMeta() . ")";
+		return "Block[" . $this->getName() . "] (" . $this->getTypeId() . ":" . $this->computeStateData() . ")";
 	}
 
 	/**

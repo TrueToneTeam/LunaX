@@ -17,17 +17,18 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\inventory;
 
-use pocketmine\item\Durable;
+use pocketmine\data\SavedDataLoadingException;
 use pocketmine\item\Item;
 use pocketmine\utils\SingletonTrait;
 use Webmozart\PathUtil\Path;
 use function file_get_contents;
+use function is_array;
 use function json_decode;
 
 final class CreativeInventory{
@@ -38,10 +39,18 @@ final class CreativeInventory{
 
 	private function __construct(){
 		$creativeItems = json_decode(file_get_contents(Path::join(\pocketmine\BEDROCK_DATA_PATH, "creativeitems.json")), true);
+		if(!is_array($creativeItems)){
+			throw new SavedDataLoadingException("Invalid creative items file, expected array as root type");
+		}
 
 		foreach($creativeItems as $data){
-			$item = Item::jsonDeserialize($data);
-			if($item->getName() === "Unknown"){
+			if(!is_array($data)){
+				throw new SavedDataLoadingException("Invalid creative items file, expected array as item type");
+			}
+			try{
+				$item = Item::legacyJsonDeserialize($data);
+			}catch(SavedDataLoadingException){
+				//unknown item
 				continue;
 			}
 			$this->add($item);
@@ -69,7 +78,7 @@ final class CreativeInventory{
 
 	public function getItemIndex(Item $item) : int{
 		foreach($this->creative as $i => $d){
-			if($item->equals($d, !($item instanceof Durable))){
+			if($item->equals($d, true, false)){
 				return $i;
 			}
 		}

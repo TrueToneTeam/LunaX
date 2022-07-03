@@ -17,14 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\player;
 
 use pocketmine\block\Bed;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\UnknownBlock;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\command\CommandSender;
@@ -241,8 +241,8 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	protected ?float $lastMovementProcess = null;
 
 	protected int $inAirTicks = 0;
-	/** @var float */
-	protected $stepHeight = 0.6;
+
+	protected float $stepHeight = 0.6;
 
 	protected ?Vector3 $sleeping = null;
 	private ?Position $spawnPosition = null;
@@ -1613,7 +1613,7 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 		}
 
 		$block = $target->getSide($face);
-		if($block->getId() === BlockLegacyIds::FIRE){
+		if($block->getTypeId() === BlockTypeIds::FIRE){
 			$this->getWorld()->setBlock($block->getPosition(), VanillaBlocks::AIR());
 			$this->getWorld()->addSound($block->getPosition()->add(0.5, 0.5, 0.5), new FireExtinguishSound());
 			return true;
@@ -2217,16 +2217,10 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 				$this->getWorld()->dropItem($this->location, $item);
 			}
 
-			if($this->inventory !== null){
-				$this->inventory->setHeldItemIndex(0);
-				$this->inventory->clearAll();
-			}
-			if($this->armorInventory !== null){
-				$this->armorInventory->clearAll();
-			}
-			if($this->offHandInventory !== null){
-				$this->offHandInventory->clearAll();
-			}
+			$this->inventory->setHeldItemIndex(0);
+			$this->inventory->clearAll();
+			$this->armorInventory->clearAll();
+			$this->offHandInventory->clearAll();
 		}
 
 		if(!$ev->getKeepXp()){
@@ -2339,6 +2333,7 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 		parent::syncNetworkData($properties);
 
 		$properties->setGenericFlag(EntityMetadataFlags::ACTION, $this->startAction > -1);
+		$properties->setGenericFlag(EntityMetadataFlags::HAS_COLLISION, $this->hasBlockCollision());
 
 		$properties->setPlayerFlag(PlayerMetadataFlags::SLEEP, $this->sleeping !== null);
 		$properties->setBlockPos(EntityMetadataProperties::PLAYER_BED_POSITION, $this->sleeping !== null ? BlockPosition::fromVector3($this->sleeping) : new BlockPosition(0, 0, 0));

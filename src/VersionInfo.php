@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -30,10 +30,10 @@ use function is_int;
 use function str_repeat;
 
 final class VersionInfo{
-	public const NAME = "Luna X(Coin)";
-	public const BASE_VERSION = "4.4.0-BETA2";
+	public const NAME = "Luna X(Ultimate)";
+	public const BASE_VERSION = "5.0.0";
 	public const IS_DEVELOPMENT_BUILD = true;
-	public const BUILD_CHANNEL = "beta";
+	public const BUILD_CHANNEL = "alpha";
 
 	public const CLIENT_TYPE = "Luna X";
 	public const CLIENT_VERSION = "2.0.0";

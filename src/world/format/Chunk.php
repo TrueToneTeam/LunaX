@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 /**
  * Implementation of MCPE-style chunks with subchunks with XZY ordering.
@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace pocketmine\world\format;
 
 use pocketmine\block\Block;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\tile\Tile;
 use function array_map;
 
@@ -45,25 +45,21 @@ class Chunk{
 
 	private int $terrainDirtyFlags = 0;
 
-	/** @var bool|null */
-	protected $lightPopulated = false;
-	/** @var bool */
-	protected $terrainPopulated = false;
+	protected ?bool $lightPopulated = false;
+	protected bool $terrainPopulated = false;
 
 	/**
 	 * @var \SplFixedArray|SubChunk[]
 	 * @phpstan-var \SplFixedArray<SubChunk>
 	 */
-	protected $subChunks;
+	protected \SplFixedArray $subChunks;
 
 	/** @var Tile[] */
-	protected $tiles = [];
+	protected array $tiles = [];
 
-	/** @var HeightArray */
-	protected $heightMap;
+	protected HeightArray $heightMap;
 
-	/** @var BiomeArray */
-	protected $biomeIds;
+	protected BiomeArray $biomeIds;
 
 	/**
 	 * @param SubChunk[] $subChunks
@@ -72,7 +68,7 @@ class Chunk{
 		$this->subChunks = new \SplFixedArray(Chunk::MAX_SUBCHUNKS);
 
 		foreach($this->subChunks as $y => $null){
-			$this->subChunks[$y] = $subChunks[$y + self::MIN_SUBCHUNK_INDEX] ?? new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, []);
+			$this->subChunks[$y] = $subChunks[$y + self::MIN_SUBCHUNK_INDEX] ?? new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, []);
 		}
 
 		$val = (self::MAX_SUBCHUNK_INDEX + 1) * SubChunk::EDGE_LENGTH;
@@ -295,7 +291,7 @@ class Chunk{
 			throw new \InvalidArgumentException("Invalid subchunk Y coordinate $y");
 		}
 
-		$this->subChunks[$y - self::MIN_SUBCHUNK_INDEX] = $subChunk ?? new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, []);
+		$this->subChunks[$y - self::MIN_SUBCHUNK_INDEX] = $subChunk ?? new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, []);
 		$this->setTerrainDirtyFlag(self::DIRTY_FLAG_BLOCKS, true);
 	}
 

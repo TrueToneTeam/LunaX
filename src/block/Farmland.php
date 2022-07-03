@@ -17,13 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
-use pocketmine\block\utils\BlockDataSerializer;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\event\entity\EntityTrampleFarmlandEvent;
@@ -37,16 +38,14 @@ class Farmland extends Transparent{
 
 	protected int $wetness = 0; //"moisture" blockstate property in PC
 
-	protected function writeStateToMeta() : int{
-		return $this->wetness;
+	public function getRequiredStateDataBits() : int{ return 3; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->wetness = $r->readBoundedInt(3, 0, self::MAX_WETNESS);
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->wetness = BlockDataSerializer::readBoundedInt("wetness", $stateMeta, 0, self::MAX_WETNESS);
-	}
-
-	public function getStateBitmask() : int{
-		return 0b111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeInt(3, $this->wetness);
 	}
 
 	public function getWetness() : int{ return $this->wetness; }

@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -25,6 +25,8 @@ namespace pocketmine\block;
 
 use pocketmine\block\tile\ShulkerBox as TileShulkerBox;
 use pocketmine\block\utils\AnyFacingTrait;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
@@ -32,6 +34,16 @@ use pocketmine\world\BlockTransaction;
 
 class ShulkerBox extends Opaque{
 	use AnyFacingTrait;
+
+	public function getRequiredStateDataBits() : int{ return 0; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		//NOOP - we don't read or write facing here, because the tile persists it
+	}
+
+	protected function encodeState(BlockDataWriter $w) : void{
+		//NOOP - we don't read or write facing here, because the tile persists it
+	}
 
 	public function writeStateToWorld() : void{
 		parent::writeStateToWorld();

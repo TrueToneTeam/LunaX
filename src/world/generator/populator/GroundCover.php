@@ -17,14 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\world\generator\populator;
 
 use pocketmine\block\BlockFactory;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\Liquid;
 use pocketmine\utils\Random;
 use pocketmine\world\biome\BiomeRegistry;
@@ -60,14 +60,14 @@ class GroundCover implements Populator{
 					for($y = $startY; $y > $endY && $y >= 0; --$y){
 						$b = $cover[$startY - $y];
 						$id = $factory->fromFullBlock($chunk->getFullBlock($x, $y, $z));
-						if($id->getId() === BlockLegacyIds::AIR && $b->isSolid()){
+						if($id->getTypeId() === BlockTypeIds::AIR && $b->isSolid()){
 							break;
 						}
 						if($b->canBeFlowedInto() && $id instanceof Liquid){
 							continue;
 						}
 
-						$chunk->setFullBlock($x, $y, $z, $b->getFullId());
+						$chunk->setFullBlock($x, $y, $z, $b->getStateId());
 					}
 				}
 			}

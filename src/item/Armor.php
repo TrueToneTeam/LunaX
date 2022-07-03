@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -42,8 +42,7 @@ class Armor extends Durable{
 
 	private ArmorTypeInfo $armorInfo;
 
-	/** @var Color|null */
-	protected $customColor = null;
+	protected ?Color $customColor = null;
 
 	public function __construct(ItemIdentifier $identifier, string $name, ArmorTypeInfo $info){
 		parent::__construct($identifier, $name);

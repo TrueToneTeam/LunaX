@@ -17,14 +17,15 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
 use pocketmine\block\utils\AnyFacingTrait;
-use pocketmine\block\utils\BlockDataSerializer;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Item;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
@@ -38,18 +39,16 @@ abstract class Button extends Flowable{
 
 	protected bool $pressed = false;
 
-	protected function writeStateToMeta() : int{
-		return BlockDataSerializer::writeFacing($this->facing) | ($this->pressed ? BlockLegacyMetadata::BUTTON_FLAG_POWERED : 0);
+	public function getRequiredStateDataBits() : int{ return 4; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->facing = $r->readFacing();
+		$this->pressed = $r->readBool();
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		//TODO: in PC it's (6 - facing) for every meta except 0 (down)
-		$this->facing = BlockDataSerializer::readFacing($stateMeta & 0x07);
-		$this->pressed = ($stateMeta & BlockLegacyMetadata::BUTTON_FLAG_POWERED) !== 0;
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeFacing($this->facing);
+		$w->writeBool($this->pressed);
 	}
 
 	public function isPressed() : bool{ return $this->pressed; }

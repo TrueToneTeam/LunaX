@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -38,9 +38,9 @@ class PermissionManager{
 	}
 
 	/** @var Permission[] */
-	protected $permissions = [];
+	protected array $permissions = [];
 	/** @var PermissibleInternal[][] */
-	protected $permSubs = [];
+	protected array $permSubs = [];
 
 	public function getPermission(string $name) : ?Permission{
 		return $this->permissions[$name] ?? null;

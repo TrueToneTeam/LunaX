@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -30,14 +30,10 @@ use function sin;
 use const M_PI;
 
 class Ore{
-	private Random $random;
-	/** @var OreType */
-	public $type;
-
-	public function __construct(Random $random, OreType $type){
-		$this->type = $type;
-		$this->random = $random;
-	}
+	public function __construct(
+		private Random $random,
+		public OreType $type
+	){}
 
 	public function getType() : OreType{
 		return $this->type;

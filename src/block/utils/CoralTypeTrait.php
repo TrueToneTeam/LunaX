@@ -17,16 +17,35 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block\utils;
 
-trait CoralTypeTrait{
+use pocketmine\block\Block;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataReaderHelper;
+use pocketmine\data\runtime\block\BlockDataWriter;
+use pocketmine\data\runtime\block\BlockDataWriterHelper;
 
+trait CoralTypeTrait{
 	protected CoralType $coralType;
 	protected bool $dead = false;
+
+	public function getRequiredTypeDataBits() : int{ return 4; }
+
+	/** @see Block::decodeType() */
+	protected function decodeType(BlockDataReader $r) : void{
+		$this->coralType = BlockDataReaderHelper::readCoralType($r);
+		$this->dead = $r->readBool();
+	}
+
+	/** @see Block::encodeType() */
+	protected function encodeType(BlockDataWriter $w) : void{
+		BlockDataWriterHelper::writeCoralType($w, $this->coralType);
+		$w->writeBool($this->dead);
+	}
 
 	public function getCoralType() : CoralType{ return $this->coralType; }
 

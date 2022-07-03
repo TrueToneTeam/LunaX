@@ -17,30 +17,26 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
-class Sponge extends Opaque{
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 
+class Sponge extends Opaque{
 	protected bool $wet = false;
 
-	protected function writeStateToMeta() : int{
-		return $this->wet ? BlockLegacyMetadata::SPONGE_FLAG_WET : 0;
+	public function getRequiredTypeDataBits() : int{ return 1; }
+
+	protected function decodeType(BlockDataReader $r) : void{
+		$this->wet = $r->readBool();
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->wet = ($stateMeta & BlockLegacyMetadata::SPONGE_FLAG_WET) !== 0;
-	}
-
-	protected function writeStateToItemMeta() : int{
-		return $this->writeStateToMeta();
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1;
+	protected function encodeType(BlockDataWriter $w) : void{
+		$w->writeBool($this->wet);
 	}
 
 	public function isWet() : bool{ return $this->wet; }

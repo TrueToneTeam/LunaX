@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -144,9 +144,9 @@ class Normal extends Generator{
 
 		$biomeCache = [];
 
-		$bedrock = VanillaBlocks::BEDROCK()->getFullId();
-		$stillWater = VanillaBlocks::WATER()->getFullId();
-		$stone = VanillaBlocks::STONE()->getFullId();
+		$bedrock = VanillaBlocks::BEDROCK()->getStateId();
+		$stillWater = VanillaBlocks::WATER()->getStateId();
+		$stone = VanillaBlocks::STONE()->getStateId();
 
 		$baseX = $chunkX * Chunk::EDGE_LENGTH;
 		$baseZ = $chunkZ * Chunk::EDGE_LENGTH;

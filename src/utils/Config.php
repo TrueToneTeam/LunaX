@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -89,7 +89,7 @@ class Config{
 	private bool $changed = false;
 
 	/** @var int[] */
-	public static $formats = [
+	public static array $formats = [
 		"properties" => Config::PROPERTIES,
 		"cnf" => Config::CNF,
 		"conf" => Config::CNF,

@@ -17,17 +17,18 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
 use pocketmine\block\tile\Hopper as TileHopper;
-use pocketmine\block\utils\BlockDataSerializer;
 use pocketmine\block\utils\InvalidBlockStateException;
 use pocketmine\block\utils\PoweredByRedstoneTrait;
 use pocketmine\block\utils\SupportType;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Item;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Facing;
@@ -40,21 +41,20 @@ class Hopper extends Transparent{
 
 	private int $facing = Facing::DOWN;
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$facing = BlockDataSerializer::readFacing($stateMeta & 0x07);
+	public function getRequiredStateDataBits() : int{ return 4; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$facing = $r->readFacing();
 		if($facing === Facing::UP){
 			throw new InvalidBlockStateException("Hopper may not face upward");
 		}
 		$this->facing = $facing;
-		$this->powered = ($stateMeta & BlockLegacyMetadata::HOPPER_FLAG_POWERED) !== 0;
+		$this->powered = $r->readBool();
 	}
 
-	protected function writeStateToMeta() : int{
-		return BlockDataSerializer::writeFacing($this->facing) | ($this->powered ? BlockLegacyMetadata::HOPPER_FLAG_POWERED : 0);
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeFacing($this->facing);
+		$w->writeBool($this->powered);
 	}
 
 	public function getFacing() : int{ return $this->facing; }

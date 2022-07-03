@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -25,7 +25,8 @@ namespace pocketmine\block;
 
 use pocketmine\block\tile\Barrel as TileBarrel;
 use pocketmine\block\utils\AnyFacingTrait;
-use pocketmine\block\utils\BlockDataSerializer;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Item;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
@@ -38,17 +39,16 @@ class Barrel extends Opaque{
 
 	protected bool $open = false;
 
-	protected function writeStateToMeta() : int{
-		return BlockDataSerializer::writeFacing($this->facing) | ($this->open ? BlockLegacyMetadata::BARREL_FLAG_OPEN : 0);
+	public function getRequiredStateDataBits() : int{ return 4; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->setFacing($r->readFacing());
+		$this->setOpen($r->readBool());
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->facing = BlockDataSerializer::readFacing($stateMeta & 0x07);
-		$this->open = ($stateMeta & BlockLegacyMetadata::BARREL_FLAG_OPEN) === BlockLegacyMetadata::BARREL_FLAG_OPEN;
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeFacing($this->getFacing());
+		$w->writeBool($this->isOpen());
 	}
 
 	public function isOpen() : bool{

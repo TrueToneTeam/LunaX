@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -40,7 +40,7 @@ class BlockPunchSound implements Sound{
 			LevelSoundEvent::HIT,
 			$pos,
 			false,
-			RuntimeBlockMapping::getInstance()->toRuntimeId($this->block->getFullId())
+			RuntimeBlockMapping::getInstance()->toRuntimeId($this->block->getStateId())
 		)];
 	}
 }

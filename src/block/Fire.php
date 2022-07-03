@@ -17,13 +17,14 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
-use pocketmine\block\utils\BlockDataSerializer;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Arrow;
 use pocketmine\event\block\BlockBurnEvent;
@@ -45,16 +46,14 @@ class Fire extends Flowable{
 
 	protected int $age = 0;
 
-	protected function writeStateToMeta() : int{
-		return $this->age;
+	public function getRequiredStateDataBits() : int{ return 4; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->age = $r->readBoundedInt(4, 0, self::MAX_AGE);
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->age = BlockDataSerializer::readBoundedInt("age", $stateMeta, 0, self::MAX_AGE);
-	}
-
-	public function getStateBitmask() : int{
-		return 0b1111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeInt(4, $this->age);
 	}
 
 	public function getAge() : int{ return $this->age; }
@@ -224,7 +223,7 @@ class Fire extends Flowable{
 						continue;
 					}
 					$block = $world->getBlockAt($targetX, $targetY, $targetZ);
-					if($block->getId() !== BlockLegacyIds::AIR){
+					if($block->getTypeId() !== BlockTypeIds::AIR){
 						continue;
 					}
 

@@ -17,18 +17,18 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\world\format\io\leveldb;
 
 use pocketmine\block\Block;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\data\bedrock\BiomeIds;
-use pocketmine\data\bedrock\blockstate\BlockStateData;
-use pocketmine\data\bedrock\blockstate\BlockStateDeserializeException;
-use pocketmine\data\bedrock\blockstate\BlockTypeNames;
+use pocketmine\data\bedrock\block\BlockStateData;
+use pocketmine\data\bedrock\block\BlockStateDeserializeException;
+use pocketmine\data\bedrock\block\BlockTypeNames;
 use pocketmine\nbt\LittleEndianNbtSerializer;
 use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\NbtException;
@@ -83,8 +83,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 
 	private const CAVES_CLIFFS_EXPERIMENTAL_SUBCHUNK_KEY_OFFSET = 4;
 
-	/** @var \LevelDB */
-	protected $db;
+	protected \LevelDB $db;
 
 	private static function checkForLevelDBExtension() : void{
 		if(!extension_loaded('leveldb')){
@@ -161,28 +160,19 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 
 		$paletteSize = $bitsPerBlock === 0 ? 1 : $stream->getLInt();
 
+		$blockDataUpgrader = GlobalBlockStateHandlers::getUpgrader();
 		$blockStateDeserializer = GlobalBlockStateHandlers::getDeserializer();
 		for($i = 0; $i < $paletteSize; ++$i){
 			try{
 				$offset = $stream->getOffset();
 
-				$tag = $nbt->read($stream->getBuffer(), $offset)->mustGetCompoundTag();
-				$stream->setOffset($offset);
-
-				if($tag->getTag("name") !== null && $tag->getTag("val") !== null){
-					//Legacy (pre-1.13) blockstate - upgrade it to a version we understand
-					$id = $tag->getString("name");
-					$data = $tag->getShort("val");
-
-					$blockStateData = GlobalBlockStateHandlers::getLegacyBlockStateMapper()->fromStringIdMeta($id, $data);
-					if($blockStateData === null){
-						//TODO: this might be a slightly-invalid state that isn't in the mapping table
-						$blockStateData = new BlockStateData(BlockTypeNames::INFO_UPDATE, CompoundTag::create(), BlockStateData::CURRENT_VERSION);
-					}
-				}else{
-					//Modern (post-1.13) blockstate
-					$blockStateData = BlockStateData::fromNbt($tag);
+				$blockStateNbt = $nbt->read($stream->getBuffer(), $offset)->mustGetCompoundTag();
+				$blockStateData = $blockDataUpgrader->upgradeBlockStateNbt($blockStateNbt);
+				if($blockStateData === null){
+					//upgrading blockstates should always succeed, regardless of whether they've been implemented or not
+					throw new BlockStateDeserializeException("Invalid or improperly mapped legacy blockstate: " . $blockStateNbt->toString());
 				}
+				$stream->setOffset($offset);
 
 				try{
 					$palette[] = $blockStateDeserializer->deserialize($blockStateData);
@@ -226,7 +216,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 		$binaryStream = new BinaryStream($extraRawData);
 		$count = $binaryStream->getLInt();
 
-		$legacyMapper = GlobalBlockStateHandlers::getLegacyBlockStateMapper();
+		$blockDataUpgrader = GlobalBlockStateHandlers::getUpgrader();
 		$blockStateDeserializer = GlobalBlockStateHandlers::getDeserializer();
 		for($i = 0; $i < $count; ++$i){
 			$key = $binaryStream->getLInt();
@@ -239,7 +229,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 
 			$blockId = $value & 0xff;
 			$blockData = ($value >> 8) & 0xf;
-			$blockStateData = $legacyMapper->fromIntIdMeta($blockId, $blockData);
+			$blockStateData = $blockDataUpgrader->upgradeIntIdMeta($blockId, $blockData);
 			if($blockStateData === null){
 				//TODO: we could preserve this in case it's supported in the future, but this was historically only
 				//used for grass anyway, so we probably don't need to care
@@ -248,7 +238,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 			$blockStateId = $blockStateDeserializer->deserialize($blockStateData);
 
 			if(!isset($extraDataLayers[$ySub])){
-				$extraDataLayers[$ySub] = new PalettedBlockArray(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS);
+				$extraDataLayers[$ySub] = new PalettedBlockArray(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS);
 			}
 			$extraDataLayers[$ySub]->set($x, $y, $z, $blockStateId);
 		}
@@ -377,14 +367,14 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 								$storages[] = $convertedLegacyExtraData[$y];
 							}
 
-							$subChunks[$y] = new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, $storages);
+							$subChunks[$y] = new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, $storages);
 							break;
 						case SubChunkVersion::PALETTED_SINGLE:
 							$storages = [$this->deserializePaletted($binaryStream)];
 							if(isset($convertedLegacyExtraData[$y])){
 								$storages[] = $convertedLegacyExtraData[$y];
 							}
-							$subChunks[$y] = new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, $storages);
+							$subChunks[$y] = new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, $storages);
 							break;
 						case SubChunkVersion::PALETTED_MULTI:
 						case SubChunkVersion::PALETTED_MULTI_WITH_OFFSET:
@@ -400,7 +390,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 								for($k = 0; $k < $storageCount; ++$k){
 									$storages[] = $this->deserializePaletted($binaryStream);
 								}
-								$subChunks[$y] = new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, $storages);
+								$subChunks[$y] = new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, $storages);
 							}
 							break;
 						default:
@@ -443,7 +433,7 @@ class LevelDB extends BaseWorldProvider implements WritableWorldProvider{
 					if(isset($convertedLegacyExtraData[$yy])){
 						$storages[] = $convertedLegacyExtraData[$yy];
 					}
-					$subChunks[$yy] = new SubChunk(BlockLegacyIds::AIR << Block::INTERNAL_METADATA_BITS, $storages);
+					$subChunks[$yy] = new SubChunk(BlockTypeIds::AIR << Block::INTERNAL_STATE_DATA_BITS, $storages);
 				}
 
 				try{

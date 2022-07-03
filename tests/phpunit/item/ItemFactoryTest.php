@@ -17,25 +17,15 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\item;
 
 use PHPUnit\Framework\TestCase;
-use pocketmine\block\BlockFactory;
 
 class ItemFactoryTest extends TestCase{
-
-	/**
-	 * Tests that blocks are considered to be valid registered items
-	 */
-	public function testItemBlockRegistered() : void{
-		for($id = 0; $id < 256; ++$id){
-			self::assertEquals(BlockFactory::getInstance()->isRegistered($id), ItemFactory::getInstance()->isRegistered($id));
-		}
-	}
 
 	/**
 	 * Test that durable items are correctly created by the item factory

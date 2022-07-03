@@ -17,17 +17,28 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block\utils;
 
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\math\Facing;
 
 trait AnyFacingTrait{
-	/** @var int */
-	protected $facing = Facing::DOWN;
+	protected int $facing = Facing::DOWN;
+
+	public function getRequiredStateDataBits() : int{ return 3; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->facing = $r->readFacing();
+	}
+
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeFacing($this->facing);
+	}
 
 	public function getFacing() : int{ return $this->facing; }
 

@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -33,7 +33,7 @@ class RuntimeBlockMappingTest extends TestCase{
 	 */
 	public function testAllBlockStatesSerialize() : void{
 		foreach(BlockFactory::getInstance()->getAllKnownStates() as $state){
-			RuntimeBlockMapping::getInstance()->toRuntimeId($state->getFullId());
+			RuntimeBlockMapping::getInstance()->toRuntimeId($state->getStateId());
 		}
 	}
 }

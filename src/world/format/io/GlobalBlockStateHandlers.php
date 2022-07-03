@@ -17,24 +17,24 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\world\format\io;
 
-use pocketmine\data\bedrock\blockstate\BlockStateData;
-use pocketmine\data\bedrock\blockstate\BlockStateDeserializer;
-use pocketmine\data\bedrock\blockstate\BlockStateSerializer;
-use pocketmine\data\bedrock\blockstate\CachingBlockStateDeserializer;
-use pocketmine\data\bedrock\blockstate\CachingBlockStateSerializer;
-use pocketmine\data\bedrock\blockstate\convert\BlockObjectToBlockStateSerializer;
-use pocketmine\data\bedrock\blockstate\convert\BlockStateToBlockObjectDeserializer;
-use pocketmine\data\bedrock\blockstate\upgrade\BlockStateUpgrader;
-use pocketmine\data\bedrock\blockstate\upgrade\BlockStateUpgradeSchemaUtils;
-use pocketmine\data\bedrock\blockstate\upgrade\LegacyBlockStateMapper;
-use pocketmine\data\bedrock\blockstate\UpgradingBlockStateDeserializer;
-use pocketmine\data\bedrock\LegacyBlockIdToStringIdMap;
+use pocketmine\data\bedrock\block\BlockStateData;
+use pocketmine\data\bedrock\block\BlockStateDeserializer;
+use pocketmine\data\bedrock\block\BlockStateSerializer;
+use pocketmine\data\bedrock\block\CachingBlockStateDeserializer;
+use pocketmine\data\bedrock\block\CachingBlockStateSerializer;
+use pocketmine\data\bedrock\block\convert\BlockObjectToBlockStateSerializer;
+use pocketmine\data\bedrock\block\convert\BlockStateToBlockObjectDeserializer;
+use pocketmine\data\bedrock\block\upgrade\BlockDataUpgrader;
+use pocketmine\data\bedrock\block\upgrade\BlockStateUpgrader;
+use pocketmine\data\bedrock\block\upgrade\BlockStateUpgradeSchemaUtils;
+use pocketmine\data\bedrock\block\upgrade\LegacyBlockIdToStringIdMap;
+use pocketmine\data\bedrock\block\upgrade\LegacyBlockStateMapper;
 use pocketmine\errorhandler\ErrorToExceptionHandler;
 use Webmozart\PathUtil\Path;
 use function file_get_contents;
@@ -48,35 +48,39 @@ use const pocketmine\BEDROCK_BLOCK_UPGRADE_SCHEMA_PATH;
  */
 final class GlobalBlockStateHandlers{
 
-	private static ?BlockStateSerializer $blockStateSerializer;
+	private static ?BlockStateSerializer $blockStateSerializer = null;
 
-	private static ?BlockStateDeserializer $blockStateDeserializer;
+	private static ?BlockStateDeserializer $blockStateDeserializer = null;
 
-	private static ?LegacyBlockStateMapper $legacyBlockStateMapper;
+	private static ?BlockDataUpgrader $blockDataUpgrader = null;
 
 	public static function getDeserializer() : BlockStateDeserializer{
-		return self::$blockStateDeserializer ??= new CachingBlockStateDeserializer(
-			new UpgradingBlockStateDeserializer(
-				new BlockStateUpgrader(BlockStateUpgradeSchemaUtils::loadSchemas(
-					Path::join(BEDROCK_BLOCK_UPGRADE_SCHEMA_PATH, 'nbt_upgrade_schema'),
-					BlockStateData::CURRENT_VERSION
-				)),
-				new BlockStateToBlockObjectDeserializer()
-			)
-		);
+		return self::$blockStateDeserializer ??= new CachingBlockStateDeserializer(new BlockStateToBlockObjectDeserializer());
 	}
 
 	public static function getSerializer() : BlockStateSerializer{
 		return self::$blockStateSerializer ??= new CachingBlockStateSerializer(new BlockObjectToBlockStateSerializer());
 	}
 
-	public static function getLegacyBlockStateMapper() : LegacyBlockStateMapper{
-		return self::$legacyBlockStateMapper ??= LegacyBlockStateMapper::loadFromString(
-			ErrorToExceptionHandler::trapAndRemoveFalse(fn() => file_get_contents(Path::join(
-				BEDROCK_BLOCK_UPGRADE_SCHEMA_PATH,
-				'1.12.0_to_1.18.10_blockstate_map.bin'
-			))),
-			LegacyBlockIdToStringIdMap::getInstance()
-		);
+	public static function getUpgrader() : BlockDataUpgrader{
+		if(self::$blockDataUpgrader === null){
+			$blockStateUpgrader = new BlockStateUpgrader(BlockStateUpgradeSchemaUtils::loadSchemas(
+				Path::join(BEDROCK_BLOCK_UPGRADE_SCHEMA_PATH, 'nbt_upgrade_schema'),
+				BlockStateData::CURRENT_VERSION
+			));
+			self::$blockDataUpgrader = new BlockDataUpgrader(
+				LegacyBlockStateMapper::loadFromString(
+					ErrorToExceptionHandler::trapAndRemoveFalse(fn() => file_get_contents(Path::join(
+						BEDROCK_BLOCK_UPGRADE_SCHEMA_PATH,
+						'1.12.0_to_1.18.10_blockstate_map.bin'
+					))),
+					LegacyBlockIdToStringIdMap::getInstance(),
+					$blockStateUpgrader
+				),
+				$blockStateUpgrader
+			);
+		}
+
+		return self::$blockDataUpgrader;
 	}
 }

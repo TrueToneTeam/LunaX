@@ -17,16 +17,17 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
 namespace pocketmine\block;
 
-use pocketmine\block\utils\BlockDataSerializer;
 use pocketmine\block\utils\Fallable;
 use pocketmine\block\utils\FallableTrait;
 use pocketmine\block\utils\SupportType;
+use pocketmine\data\runtime\block\BlockDataReader;
+use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\event\block\BlockMeltEvent;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
@@ -46,16 +47,14 @@ class SnowLayer extends Flowable implements Fallable{
 
 	protected int $layers = self::MIN_LAYERS;
 
-	protected function writeStateToMeta() : int{
-		return $this->layers - 1;
+	public function getRequiredStateDataBits() : int{ return 3; }
+
+	protected function decodeState(BlockDataReader $r) : void{
+		$this->layers = $r->readBoundedInt(3, self::MIN_LAYERS - 1, self::MAX_LAYERS - 1) + 1;
 	}
 
-	public function readStateFromData(int $id, int $stateMeta) : void{
-		$this->layers = BlockDataSerializer::readBoundedInt("layers", $stateMeta + 1, self::MIN_LAYERS, self::MAX_LAYERS);
-	}
-
-	public function getStateBitmask() : int{
-		return 0b111;
+	protected function encodeState(BlockDataWriter $w) : void{
+		$w->writeInt(3, $this->layers - 1);
 	}
 
 	public function getLayers() : int{ return $this->layers; }

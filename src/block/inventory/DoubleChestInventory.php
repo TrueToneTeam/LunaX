@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -41,7 +41,7 @@ class DoubleChestInventory extends BaseInventory implements BlockInventory, Inve
 		parent::__construct();
 	}
 
-	public function getInventory(){
+	public function getInventory() : self{
 		return $this;
 	}
 

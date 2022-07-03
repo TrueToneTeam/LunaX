@@ -17,7 +17,7 @@
  * @link http://www.pocketmine.net/
  *
  *
-*/
+ */
 
 declare(strict_types=1);
 
@@ -25,13 +25,14 @@ namespace pocketmine\network\mcpe\convert;
 
 use pocketmine\data\bedrock\item\ItemDeserializer;
 use pocketmine\data\bedrock\item\ItemSerializer;
+use pocketmine\data\bedrock\item\ItemTypeDeserializeException;
 use pocketmine\data\bedrock\item\ItemTypeSerializeException;
 use pocketmine\data\bedrock\item\SavedItemData;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\item\Item;
 use pocketmine\network\mcpe\protocol\serializer\ItemTypeDictionary;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\world\format\io\GlobalBlockStateHandlers;
 
 /**
  * This class handles translation between network item ID+metadata to PocketMine-MP internal ID+metadata and vice versa.
@@ -42,11 +43,17 @@ final class ItemTranslator{
 	use SingletonTrait;
 
 	private static function make() : self{
-		return new self(GlobalItemTypeDictionary::getInstance()->getDictionary(), new ItemSerializer(), new ItemDeserializer());
+		return new self(
+			GlobalItemTypeDictionary::getInstance()->getDictionary(),
+			RuntimeBlockMapping::getInstance()->getBlockStateDictionary(),
+			new ItemSerializer(GlobalBlockStateHandlers::getSerializer()),
+			new ItemDeserializer(GlobalBlockStateHandlers::getDeserializer())
+		);
 	}
 
 	public function __construct(
-		private ItemTypeDictionary $dictionary,
+		private ItemTypeDictionary $itemTypeDictionary,
+		private BlockStateDictionary $blockStateDictionary,
 		private ItemSerializer $itemSerializer,
 		private ItemDeserializer $itemDeserializer
 	){}
@@ -55,22 +62,30 @@ final class ItemTranslator{
 	 * @return int[]|null
 	 * @phpstan-return array{int, int, int}|null
 	 */
-	public function toNetworkIdQuiet(int $internalId, int $internalMeta) : ?array{
-		//TODO: we should probably come up with a cache for this
-
+	public function toNetworkIdQuiet(Item $item) : ?array{
 		try{
-			$itemData = $this->itemSerializer->serialize(ItemFactory::getInstance()->get($internalId, $internalMeta));
+			return $this->toNetworkId($item);
 		}catch(ItemTypeSerializeException){
-			//TODO: this will swallow any serializer error; this is not ideal, but it should be OK since unit tests
-			//should cover this
 			return null;
 		}
+	}
 
-		$numericId = $this->dictionary->fromStringId($itemData->getName());
+	/**
+	 * @return int[]
+	 * @phpstan-return array{int, int, int}
+	 *
+	 * @throws ItemTypeSerializeException
+	 */
+	public function toNetworkId(Item $item) : array{
+		//TODO: we should probably come up with a cache for this
+
+		$itemData = $this->itemSerializer->serializeType($item);
+
+		$numericId = $this->itemTypeDictionary->fromStringId($itemData->getName());
 		$blockStateData = $itemData->getBlock();
 
 		if($blockStateData !== null){
-			$blockRuntimeId = RuntimeBlockMapping::getInstance()->getBlockStateDictionary()->lookupStateIdFromData($blockStateData);
+			$blockRuntimeId = $this->blockStateDictionary->lookupStateIdFromData($blockStateData);
 			if($blockRuntimeId === null){
 				throw new AssumptionFailedError("Unmapped blockstate returned by blockstate serializer: " . $blockStateData->toNbt());
 			}
@@ -82,41 +97,28 @@ final class ItemTranslator{
 	}
 
 	/**
-	 * @return int[]
-	 * @phpstan-return array{int, int, int}
-	 */
-	public function toNetworkId(int $internalId, int $internalMeta) : array{
-		return $this->toNetworkIdQuiet($internalId, $internalMeta) ??
-			$this->toNetworkIdQuiet(ItemIds::INFO_UPDATE, 0) ?? //TODO: bad duct tape
-			throw new \InvalidArgumentException("Unmapped ID/metadata combination $internalId:$internalMeta");
-	}
-
-	/**
-	 * @return int[]
-	 * @phpstan-return array{int, int}
 	 * @throws TypeConversionException
 	 */
-	public function fromNetworkId(int $networkId, int $networkMeta, int $networkBlockRuntimeId) : array{
-		$stringId = $this->dictionary->fromIntId($networkId);
-
-		$blockStateData = $networkBlockRuntimeId !== self::NO_BLOCK_RUNTIME_ID ?
-			RuntimeBlockMapping::getInstance()->getBlockStateDictionary()->getDataFromStateId($networkBlockRuntimeId) :
-			null;
-
-		$item = $this->itemDeserializer->deserialize(new SavedItemData($stringId, $networkMeta, $blockStateData));
-		return [$item->getId(), $item->getMeta()];
-	}
-
-	/**
-	 * @return int[]
-	 * @phpstan-return array{int, int}
-	 * @throws TypeConversionException
-	 */
-	public function fromNetworkIdWithWildcardHandling(int $networkId, int $networkMeta) : array{
-		if($networkMeta !== 0x7fff){
-			return $this->fromNetworkId($networkId, $networkMeta, 0);
+	public function fromNetworkId(int $networkId, int $networkMeta, int $networkBlockRuntimeId) : Item{
+		try{
+			$stringId = $this->itemTypeDictionary->fromIntId($networkId);
+		}catch(\InvalidArgumentException $e){
+			//TODO: a quiet version of fromIntId() would be better than catching InvalidArgumentException
+			throw TypeConversionException::wrap($e, "Invalid network itemstack ID $networkId");
 		}
-		[$id, ] = $this->fromNetworkId($networkId, 0, 0);
-		return [$id, -1];
+
+		$blockStateData = null;
+		if($networkBlockRuntimeId !== self::NO_BLOCK_RUNTIME_ID){
+			$blockStateData = $this->blockStateDictionary->getDataFromStateId($networkBlockRuntimeId);
+			if($blockStateData === null){
+				throw new TypeConversionException("Blockstate runtimeID $networkBlockRuntimeId does not correspond to any known blockstate");
+			}
+		}
+
+		try{
+			return $this->itemDeserializer->deserializeType(new SavedItemData($stringId, $networkMeta, $blockStateData));
+		}catch(ItemTypeDeserializeException $e){
+			throw TypeConversionException::wrap($e, "Invalid network itemstack data");
+		}
 	}
 }
