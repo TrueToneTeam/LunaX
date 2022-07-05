@@ -23,7 +23,8 @@ declare(strict_types=1);
 
 namespace pocketmine\block;
 
-use pocketmine\block\utils\TreeType;
+use pocketmine\block\utils\PillarRotationTrait;
+use pocketmine\block\utils\WoodTypeTrait;
 use pocketmine\data\runtime\block\BlockDataReader;
 use pocketmine\data\runtime\block\BlockDataWriter;
 use pocketmine\item\Axe;
@@ -32,15 +33,10 @@ use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 
 class Wood extends Opaque{
-
-	private TreeType $treeType;
+	use PillarRotationTrait;
+	use WoodTypeTrait;
 
 	private bool $stripped = false;
-
-	public function __construct(BlockIdentifier $idInfo, string $name, BlockBreakInfo $breakInfo, TreeType $treeType){
-		parent::__construct($idInfo, $name, $breakInfo);
-		$this->treeType = $treeType;
-	}
 
 	public function getRequiredTypeDataBits() : int{ return 1; }
 
@@ -50,13 +46,6 @@ class Wood extends Opaque{
 
 	protected function encodeType(BlockDataWriter $w) : void{
 		$w->writeBool($this->stripped);
-	}
-
-	/**
-	 * TODO: this is ad hoc, but add an interface for this to all tree-related blocks
-	 */
-	public function getTreeType() : TreeType{
-		return $this->treeType;
 	}
 
 	public function isStripped() : bool{ return $this->stripped; }
@@ -72,11 +61,11 @@ class Wood extends Opaque{
 	}
 
 	public function getFlameEncouragement() : int{
-		return 5;
+		return $this->woodType->isFlammable() ? 5 : 0;
 	}
 
 	public function getFlammability() : int{
-		return 5;
+		return $this->woodType->isFlammable() ? 5 : 0;
 	}
 
 	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null) : bool{

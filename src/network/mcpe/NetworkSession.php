@@ -853,15 +853,14 @@ class NetworkSession{
 			}
 
 			$description = $command->getDescription();
+			$overloads = $command->getOverloads();
 			$data = new CommandData(
 				$lname, //TODO: commands containing uppercase letters in the name crash 1.9.0 client
 				$description instanceof Translatable ? $this->player->getLanguage()->translate($description) : $description,
 				0,
 				0,
 				$aliasObj,
-				[
-					[CommandParameter::standard("args", AvailableCommandsPacket::ARG_TYPE_RAWTEXT, 0, true)]
-				]
+				$overloads
 			);
 
 			$commandData[$command->getName()] = $data;
