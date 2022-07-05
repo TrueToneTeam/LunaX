@@ -21,29 +21,11 @@
 
 declare(strict_types=1);
 
-<<<<<<<< HEAD:src/crafting/json/RecipeIngredientData.php
-namespace pocketmine\crafting\json;
-
-final class RecipeIngredientData{
-	public const WILDCARD_META_VALUE = 32767;
-
-	/** @required */
-	public string $name;
-	/** @required */
-	public int $meta;
-
-	public int $count;
-
-	public function __construct(string $name, int $meta){
-		$this->name = $name;
-		$this->meta = $meta;
-========
 namespace pocketmine\item;
 
 class Spyglass extends Item{
 
 	public function getMaxStackSize() : int{
 		return 1;
->>>>>>>> upstream/modern-world-support:src/item/Spyglass.php
 	}
 }
