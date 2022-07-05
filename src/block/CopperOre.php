@@ -21,23 +21,16 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\block\utils;
+namespace pocketmine\block;
 
-use pocketmine\data\runtime\RuntimeDataReader;
-use pocketmine\data\runtime\RuntimeDataWriter;
+use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 
-trait RailPoweredByRedstoneTrait{
-	use PoweredByRedstoneTrait;
+final class CopperOre extends Opaque{
 
-	public function getRequiredStateDataBits() : int{ return parent::getRequiredStateDataBits() + 1; }
-
-	protected function decodeState(RuntimeDataReader $r) : void{
-		parent::decodeState($r);
-		$this->powered = $r->readBool();
+	public function getDropsForCompatibleTool(Item $item) : array{
+		return [VanillaItems::RAW_COPPER()];
 	}
 
-	protected function encodeState(RuntimeDataWriter $w) : void{
-		parent::encodeState($w);
-		$w->writeBool($this->powered);
-	}
+	public function isAffectedBySilkTouch() : bool{ return true; }
 }
