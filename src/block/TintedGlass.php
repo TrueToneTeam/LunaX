@@ -23,27 +23,9 @@ declare(strict_types=1);
 
 namespace pocketmine\block;
 
-use pocketmine\math\Facing;
+final class TintedGlass extends Transparent{
 
-final class SoulFire extends BaseFire{
-
-	public function getLightLevel() : int{
-		return 10;
-	}
-
-	protected function getFireDamage() : int{
-		return 2;
-	}
-
-	public static function canBeSupportedBy(Block $block) : bool{
-		//TODO: this really ought to use some kind of tag system
-		$id = $block->getTypeId();
-		return $id === BlockTypeIds::SOUL_SAND || $id === BlockTypeIds::SOUL_SOIL;
-	}
-
-	public function onNearbyBlockChange() : void{
-		if(!self::canBeSupportedBy($this->getSide(Facing::DOWN))){
-			$this->position->getWorld()->setBlock($this->position, VanillaBlocks::AIR());
-		}
+	public function getLightFilter() : int{
+		return 15;
 	}
 }

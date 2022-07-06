@@ -71,7 +71,7 @@ final class StringToItemParser extends StringToTParser{
 			//wall and floor coral fans are the same item
 			$result->registerBlock($prefix("coral_fan"), fn() => Blocks::CORAL_FAN()->setCoralType($coralType));
 		}
-		for($i = Light::MIN_LIGHT_LEVEL; $i < Light::MAX_LIGHT_LEVEL; $i++){
+		for($i = Light::MIN_LIGHT_LEVEL; $i <= Light::MAX_LIGHT_LEVEL; $i++){
 			//helper aliases, since we don't support passing data values in /give
 			$result->registerBlock("light_$i", fn() => Blocks::LIGHT()->setLightLevel($i));
 			$result->registerBlock("light_block_$i", fn() => Blocks::LIGHT()->setLightLevel($i));
@@ -995,6 +995,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("tall_grass", fn() => Blocks::TALL_GRASS());
 		$result->registerBlock("tallgrass", fn() => Blocks::FERN());
 		$result->registerBlock("terracotta", fn() => Blocks::STAINED_CLAY());
+		$result->registerBlock("tinted_glass", fn() => Blocks::TINTED_GLASS());
 		$result->registerBlock("tnt", fn() => Blocks::TNT());
 		$result->registerBlock("torch", fn() => Blocks::TORCH());
 		$result->registerBlock("trapdoor", fn() => Blocks::OAK_TRAPDOOR());
