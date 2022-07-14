@@ -30,6 +30,7 @@ use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\block\SweetBerryBush;
 use pocketmine\block\utils\BrewingStandSlot;
+use pocketmine\block\utils\CopperOxidation;
 use pocketmine\block\utils\CoralType;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\utils\LeverFacing;
@@ -58,6 +59,7 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 	private array $deserializeFuncs = [];
 
 	public function __construct(){
+		$this->registerCandleDeserializers();
 		$this->registerDeserializers();
 	}
 
@@ -89,6 +91,48 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 	 */
 	public function mapStairs(string $id, \Closure $getBlock) : void{
 		$this->map($id, fn(Reader $in) : Stair => Helper::decodeStairs($getBlock(), $in));
+	}
+
+	private function registerCandleDeserializers() : void{
+		$this->map(Ids::CANDLE, fn(Reader $in) => Helper::decodeCandle(Blocks::CANDLE(), $in));
+		$dyedCandleDeserializer = fn(DyeColor $color) => fn(Reader $in) => Helper::decodeCandle(Blocks::DYED_CANDLE()->setColor($color), $in);
+		$this->map(Ids::BLACK_CANDLE, $dyedCandleDeserializer(DyeColor::BLACK()));
+		$this->map(Ids::BLUE_CANDLE, $dyedCandleDeserializer(DyeColor::BLUE()));
+		$this->map(Ids::BROWN_CANDLE, $dyedCandleDeserializer(DyeColor::BROWN()));
+		$this->map(Ids::CYAN_CANDLE, $dyedCandleDeserializer(DyeColor::CYAN()));
+		$this->map(Ids::GRAY_CANDLE, $dyedCandleDeserializer(DyeColor::GRAY()));
+		$this->map(Ids::GREEN_CANDLE, $dyedCandleDeserializer(DyeColor::GREEN()));
+		$this->map(Ids::LIGHT_BLUE_CANDLE, $dyedCandleDeserializer(DyeColor::LIGHT_BLUE()));
+		$this->map(Ids::LIGHT_GRAY_CANDLE, $dyedCandleDeserializer(DyeColor::LIGHT_GRAY()));
+		$this->map(Ids::LIME_CANDLE, $dyedCandleDeserializer(DyeColor::LIME()));
+		$this->map(Ids::MAGENTA_CANDLE, $dyedCandleDeserializer(DyeColor::MAGENTA()));
+		$this->map(Ids::ORANGE_CANDLE, $dyedCandleDeserializer(DyeColor::ORANGE()));
+		$this->map(Ids::PINK_CANDLE, $dyedCandleDeserializer(DyeColor::PINK()));
+		$this->map(Ids::PURPLE_CANDLE, $dyedCandleDeserializer(DyeColor::PURPLE()));
+		$this->map(Ids::RED_CANDLE, $dyedCandleDeserializer(DyeColor::RED()));
+		$this->map(Ids::WHITE_CANDLE, $dyedCandleDeserializer(DyeColor::WHITE()));
+		$this->map(Ids::YELLOW_CANDLE, $dyedCandleDeserializer(DyeColor::YELLOW()));
+
+		$this->map(Ids::CANDLE_CAKE, fn(Reader $in) => Blocks::CAKE_WITH_CANDLE()->setLit($in->readBool(StateNames::LIT)));
+		$cakeWithDyedCandleDeserializer = fn(DyeColor $color) => fn(Reader $in) => Blocks::CAKE_WITH_DYED_CANDLE()
+			->setColor($color)
+			->setLit($in->readBool(StateNames::LIT));
+		$this->map(Ids::BLACK_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::BLACK()));
+		$this->map(Ids::BLUE_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::BLUE()));
+		$this->map(Ids::BROWN_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::BROWN()));
+		$this->map(Ids::CYAN_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::CYAN()));
+		$this->map(Ids::GRAY_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::GRAY()));
+		$this->map(Ids::GREEN_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::GREEN()));
+		$this->map(Ids::LIGHT_BLUE_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::LIGHT_BLUE()));
+		$this->map(Ids::LIGHT_GRAY_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::LIGHT_GRAY()));
+		$this->map(Ids::LIME_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::LIME()));
+		$this->map(Ids::MAGENTA_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::MAGENTA()));
+		$this->map(Ids::ORANGE_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::ORANGE()));
+		$this->map(Ids::PINK_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::PINK()));
+		$this->map(Ids::PURPLE_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::PURPLE()));
+		$this->map(Ids::RED_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::RED()));
+		$this->map(Ids::WHITE_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::WHITE()));
+		$this->map(Ids::YELLOW_CANDLE_CAKE, $cakeWithDyedCandleDeserializer(DyeColor::YELLOW()));
 	}
 
 	private function registerDeserializers() : void{
@@ -270,6 +314,10 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 			return Blocks::CONCRETE_POWDER()
 				->setColor($in->readColor());
 		});
+		$this->map(Ids::COPPER_BLOCK, fn() => Helper::decodeCopper(Blocks::COPPER(), CopperOxidation::NONE()));
+		$this->map(Ids::CUT_COPPER, fn() => Helper::decodeCopper(Blocks::CUT_COPPER(), CopperOxidation::NONE()));
+		$this->mapSlab(Ids::CUT_COPPER_SLAB, Ids::DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::NONE()));
+		$this->mapStairs(Ids::CUT_COPPER_STAIRS, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::NONE()));
 		$this->map(Ids::COPPER_ORE, fn() => Blocks::COPPER_ORE());
 		$this->map(Ids::CORAL, function(Reader $in) : Block{
 			return Blocks::CORAL()
@@ -290,9 +338,7 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 		$this->map(Ids::CORAL_FAN_HANG2, fn(Reader $in) => Helper::decodeWallCoralFan(Blocks::WALL_CORAL_FAN(), $in)
 				->setCoralType($in->readBool(StateNames::CORAL_HANG_TYPE_BIT) ? CoralType::FIRE() : CoralType::BUBBLE()));
 		$this->map(Ids::CORAL_FAN_HANG3, function(Reader $in) : Block{
-			if($in->readBool(StateNames::CORAL_HANG_TYPE_BIT)){
-				throw $in->badValueException(StateNames::CORAL_HANG_TYPE_BIT, "1", "This should always be zero for hang3");
-			}
+			$in->ignored(StateNames::CORAL_HANG_TYPE_BIT); //the game always writes this, even though it's not used
 			return Helper::decodeWallCoralFan(Blocks::WALL_CORAL_FAN(), $in)
 				->setCoralType(CoralType::HORN());
 		});
@@ -314,6 +360,7 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 		$this->map(Ids::CRIMSON_STEM, fn(Reader $in) => Helper::decodeLog(Blocks::CRIMSON_STEM(), false, $in));
 		$this->map(Ids::CRIMSON_TRAPDOOR, fn(Reader $in) => Helper::decodeTrapdoor(Blocks::CRIMSON_TRAPDOOR(), $in));
 		$this->map(Ids::CRIMSON_WALL_SIGN, fn(Reader $in) => Helper::decodeWallSign(Blocks::CRIMSON_WALL_SIGN(), $in));
+		$this->map(Ids::CRYING_OBSIDIAN, fn() => Blocks::CRYING_OBSIDIAN());
 		$this->map(Ids::CYAN_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::CYAN(), $in));
 		$this->map(Ids::DARK_OAK_BUTTON, fn(Reader $in) => Helper::decodeButton(Blocks::DARK_OAK_BUTTON(), $in));
 		$this->map(Ids::DARK_OAK_DOOR, fn(Reader $in) => Helper::decodeDoor(Blocks::DARK_OAK_DOOR(), $in));
@@ -536,6 +583,10 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 			return Blocks::ENDER_CHEST()
 				->setFacing($in->readHorizontalFacing());
 		});
+		$this->map(Ids::EXPOSED_COPPER, fn() => Helper::decodeCopper(Blocks::COPPER(), CopperOxidation::EXPOSED()));
+		$this->map(Ids::EXPOSED_CUT_COPPER, fn() => Helper::decodeCopper(Blocks::CUT_COPPER(), CopperOxidation::EXPOSED()));
+		$this->mapSlab(Ids::EXPOSED_CUT_COPPER_SLAB, Ids::EXPOSED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::EXPOSED()));
+		$this->mapStairs(Ids::EXPOSED_CUT_COPPER_STAIRS, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::EXPOSED()));
 		$this->map(Ids::FARMLAND, function(Reader $in) : Block{
 			return Blocks::FARMLAND()
 				->setWetness($in->readBoundedInt(StateNames::MOISTURIZED_AMOUNT, 0, 7));
@@ -578,6 +629,7 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 				->setFacing($in->readHorizontalFacing())
 				->setLit(false);
 		});
+		$this->map(Ids::GILDED_BLACKSTONE, fn() => Blocks::GILDED_BLACKSTONE());
 		$this->map(Ids::GLASS, fn() => Blocks::GLASS());
 		$this->map(Ids::GLASS_PANE, fn() => Blocks::GLASS_PANE());
 		$this->map(Ids::GLOWINGOBSIDIAN, fn() => Blocks::GLOWING_OBSIDIAN());
@@ -690,6 +742,10 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 			return Blocks::LIGHT()
 				->setLightLevel($in->readBoundedInt(StateNames::BLOCK_LIGHT_LEVEL, Light::MIN_LIGHT_LEVEL, Light::MAX_LIGHT_LEVEL));
 		});
+		$this->map(Ids::LIGHTNING_ROD, function(Reader $in) : Block{
+			return Blocks::LIGHTNING_ROD()
+				->setFacing($in->readFacingDirection());
+		});
 		$this->map(Ids::LIGHT_BLUE_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::LIGHT_BLUE(), $in));
 		$this->map(Ids::LIGHT_WEIGHTED_PRESSURE_PLATE, fn(Reader $in) => Helper::decodeWeightedPressurePlate(Blocks::WEIGHTED_PRESSURE_PLATE_LIGHT(), $in));
 		$this->map(Ids::LIME_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::LIME(), $in));
@@ -793,6 +849,10 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 		$this->mapStairs(Ids::OAK_STAIRS, fn() => Blocks::OAK_STAIRS());
 		$this->map(Ids::OBSIDIAN, fn() => Blocks::OBSIDIAN());
 		$this->map(Ids::ORANGE_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::ORANGE(), $in));
+		$this->map(Ids::OXIDIZED_COPPER, fn() => Helper::decodeCopper(Blocks::COPPER(), CopperOxidation::OXIDIZED()));
+		$this->map(Ids::OXIDIZED_CUT_COPPER, fn() => Helper::decodeCopper(Blocks::CUT_COPPER(), CopperOxidation::OXIDIZED()));
+		$this->mapSlab(Ids::OXIDIZED_CUT_COPPER_SLAB, Ids::OXIDIZED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::OXIDIZED()));
+		$this->mapStairs(Ids::OXIDIZED_CUT_COPPER_STAIRS, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::OXIDIZED()));
 		$this->map(Ids::PACKED_ICE, fn() => Blocks::PACKED_ICE());
 		$this->map(Ids::PINK_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::PINK(), $in));
 		$this->map(Ids::PLANKS, function(Reader $in) : Block{
@@ -1187,8 +1247,29 @@ final class BlockStateToBlockObjectDeserializer implements BlockStateDeserialize
 		$this->map(Ids::WARPED_STEM, fn(Reader $in) => Helper::decodeLog(Blocks::WARPED_STEM(), false, $in));
 		$this->map(Ids::WARPED_TRAPDOOR, fn(Reader $in) => Helper::decodeTrapdoor(Blocks::WARPED_TRAPDOOR(), $in));
 		$this->map(Ids::WARPED_WALL_SIGN, fn(Reader $in) => Helper::decodeWallSign(Blocks::WARPED_WALL_SIGN(), $in));
+		$this->map(Ids::WARPED_WART_BLOCK, fn() => Blocks::WARPED_WART_BLOCK());
 		$this->map(Ids::WATER, fn(Reader $in) => Helper::decodeStillLiquid(Blocks::WATER(), $in));
 		$this->map(Ids::WATERLILY, fn() => Blocks::LILY_PAD());
+		$this->map(Ids::WAXED_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::COPPER(), CopperOxidation::NONE()));
+		$this->map(Ids::WAXED_CUT_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER(), CopperOxidation::NONE()));
+		$this->mapSlab(Ids::WAXED_CUT_COPPER_SLAB, Ids::WAXED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::NONE()));
+		$this->mapStairs(Ids::WAXED_CUT_COPPER_STAIRS, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::NONE()));
+		$this->map(Ids::WAXED_EXPOSED_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::COPPER(), CopperOxidation::EXPOSED()));
+		$this->map(Ids::WAXED_EXPOSED_CUT_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER(), CopperOxidation::EXPOSED()));
+		$this->mapSlab(Ids::WAXED_EXPOSED_CUT_COPPER_SLAB, Ids::WAXED_EXPOSED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::EXPOSED()));
+		$this->mapStairs(Ids::WAXED_EXPOSED_CUT_COPPER_STAIRS, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::EXPOSED()));
+		$this->map(Ids::WAXED_OXIDIZED_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::COPPER(), CopperOxidation::OXIDIZED()));
+		$this->map(Ids::WAXED_OXIDIZED_CUT_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER(), CopperOxidation::OXIDIZED()));
+		$this->mapSlab(Ids::WAXED_OXIDIZED_CUT_COPPER_SLAB, Ids::WAXED_OXIDIZED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::OXIDIZED()));
+		$this->mapStairs(Ids::WAXED_OXIDIZED_CUT_COPPER_STAIRS, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::OXIDIZED()));
+		$this->map(Ids::WAXED_WEATHERED_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::COPPER(), CopperOxidation::WEATHERED()));
+		$this->map(Ids::WAXED_WEATHERED_CUT_COPPER, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER(), CopperOxidation::WEATHERED()));
+		$this->mapSlab(Ids::WAXED_WEATHERED_CUT_COPPER_SLAB, Ids::WAXED_WEATHERED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::WEATHERED()));
+		$this->mapStairs(Ids::WAXED_WEATHERED_CUT_COPPER_STAIRS, fn() => Helper::decodeWaxedCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::WEATHERED()));
+		$this->map(Ids::WEATHERED_COPPER, fn() => Helper::decodeCopper(Blocks::COPPER(), CopperOxidation::WEATHERED()));
+		$this->map(Ids::WEATHERED_CUT_COPPER, fn() => Helper::decodeCopper(Blocks::CUT_COPPER(), CopperOxidation::WEATHERED()));
+		$this->mapSlab(Ids::WEATHERED_CUT_COPPER_SLAB, Ids::WEATHERED_DOUBLE_CUT_COPPER_SLAB, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_SLAB(), CopperOxidation::WEATHERED()));
+		$this->mapStairs(Ids::WEATHERED_CUT_COPPER_STAIRS, fn() => Helper::decodeCopper(Blocks::CUT_COPPER_STAIRS(), CopperOxidation::WEATHERED()));
 		$this->map(Ids::WEB, fn() => Blocks::COBWEB());
 		$this->map(Ids::WHEAT, fn(Reader $in) => Helper::decodeCrops(Blocks::WHEAT(), $in));
 		$this->map(Ids::WHITE_GLAZED_TERRACOTTA, fn(Reader $in) => Helper::decodeGlazedTerracotta(DyeColor::WHITE(), $in));

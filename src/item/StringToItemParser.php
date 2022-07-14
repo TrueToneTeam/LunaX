@@ -25,6 +25,7 @@ namespace pocketmine\item;
 
 use pocketmine\block\Block;
 use pocketmine\block\Light;
+use pocketmine\block\utils\CopperOxidation;
 use pocketmine\block\utils\CoralType;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\utils\SkullType;
@@ -50,6 +51,7 @@ final class StringToItemParser extends StringToTParser{
 			//wall and floor banner are the same item
 			$result->registerBlock($prefix("banner"), fn() => Blocks::BANNER()->setColor($color));
 			$result->registerBlock($prefix("bed"), fn() => Blocks::BED()->setColor($color));
+			$result->registerBlock($prefix("candle"), fn() => Blocks::DYED_CANDLE()->setColor($color));
 			$result->registerBlock($prefix("carpet"), fn() => Blocks::CARPET()->setColor($color));
 			$result->registerBlock($prefix("concrete"), fn() => Blocks::CONCRETE()->setColor($color));
 			$result->registerBlock($prefix("concrete_powder"), fn() => Blocks::CONCRETE_POWDER()->setColor($color));
@@ -75,6 +77,18 @@ final class StringToItemParser extends StringToTParser{
 			//helper aliases, since we don't support passing data values in /give
 			$result->registerBlock("light_$i", fn() => Blocks::LIGHT()->setLightLevel($i));
 			$result->registerBlock("light_block_$i", fn() => Blocks::LIGHT()->setLightLevel($i));
+		}
+
+		foreach(CopperOxidation::getAll() as $oxidation){
+			$oxPrefix = $oxidation->equals(CopperOxidation::NONE()) ? "" : $oxidation->name() . "_";
+
+			foreach(["" => false, "waxed_" => true] as $waxedPrefix => $waxed){
+				$prefix = $waxedPrefix . $oxPrefix;
+				$result->registerBlock($prefix . "copper_block", fn() => Blocks::COPPER()->setOxidation($oxidation)->setWaxed($waxed));
+				$result->registerBlock($prefix . "cut_copper_block", fn() => Blocks::CUT_COPPER()->setOxidation($oxidation)->setWaxed($waxed));
+				$result->registerBlock($prefix . "cut_copper_stairs", fn() => Blocks::CUT_COPPER_STAIRS()->setOxidation($oxidation)->setWaxed($waxed));
+				$result->registerBlock($prefix . "cut_copper_slab", fn() => Blocks::CUT_COPPER_SLAB()->setOxidation($oxidation)->setWaxed($waxed));
+			}
 		}
 
 		$result->registerBlock("acacia_button", fn() => Blocks::ACACIA_BUTTON());
@@ -168,6 +182,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("cake", fn() => Blocks::CAKE());
 		$result->registerBlock("cake_block", fn() => Blocks::CAKE());
 		$result->registerBlock("calcite", fn() => Blocks::CALCITE());
+		$result->registerBlock("candle", fn() => Blocks::CANDLE());
 		$result->registerBlock("carpet", fn() => Blocks::CARPET());
 		$result->registerBlock("carrot_block", fn() => Blocks::CARROTS());
 		$result->registerBlock("carrots", fn() => Blocks::CARROTS());
@@ -239,6 +254,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("crimson_stairs", fn() => Blocks::CRIMSON_STAIRS());
 		$result->registerBlock("crimson_stem", fn() => Blocks::CRIMSON_STEM()->setStripped(false));
 		$result->registerBlock("crimson_trapdoor", fn() => Blocks::CRIMSON_TRAPDOOR());
+		$result->registerBlock("crying_obsidian", fn() => Blocks::CRYING_OBSIDIAN());
 		$result->registerBlock("cut_red_sandstone", fn() => Blocks::CUT_RED_SANDSTONE());
 		$result->registerBlock("cut_red_sandstone_slab", fn() => Blocks::CUT_RED_SANDSTONE_SLAB());
 		$result->registerBlock("cut_sandstone", fn() => Blocks::CUT_SANDSTONE());
@@ -593,6 +609,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("frame_block", fn() => Blocks::ITEM_FRAME());
 		$result->registerBlock("frosted_ice", fn() => Blocks::FROSTED_ICE());
 		$result->registerBlock("furnace", fn() => Blocks::FURNACE());
+		$result->registerBlock("gilded_blackstone", fn() => Blocks::GILDED_BLACKSTONE());
 		$result->registerBlock("glass", fn() => Blocks::GLASS());
 		$result->registerBlock("glass_pane", fn() => Blocks::GLASS_PANE());
 		$result->registerBlock("glass_panel", fn() => Blocks::GLASS_PANE());
@@ -693,6 +710,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("light", fn() => Blocks::LIGHT());
 		$result->registerBlock("light_block", fn() => Blocks::LIGHT());
 		$result->registerBlock("light_weighted_pressure_plate", fn() => Blocks::WEIGHTED_PRESSURE_PLATE_LIGHT());
+		$result->registerBlock("lightning_rod", fn() => Blocks::LIGHTNING_ROD());
 		$result->registerBlock("lilac", fn() => Blocks::LILAC());
 		$result->registerBlock("lily_of_the_valley", fn() => Blocks::LILY_OF_THE_VALLEY());
 		$result->registerBlock("lily_pad", fn() => Blocks::LILY_PAD());
@@ -1031,6 +1049,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->registerBlock("warped_stairs", fn() => Blocks::WARPED_STAIRS());
 		$result->registerBlock("warped_stem", fn() => Blocks::WARPED_STEM()->setStripped(false));
 		$result->registerBlock("warped_trapdoor", fn() => Blocks::WARPED_TRAPDOOR());
+		$result->registerBlock("warped_wart_block", fn() => Blocks::WARPED_WART_BLOCK());
 		$result->registerBlock("water", fn() => Blocks::WATER());
 		$result->registerBlock("water_lily", fn() => Blocks::LILY_PAD());
 		$result->registerBlock("waterlily", fn() => Blocks::LILY_PAD());
@@ -1226,6 +1245,7 @@ final class StringToItemParser extends StringToTParser{
 		$result->register("healing_potion", fn() => Items::POTION()->setType(PotionType::HEALING()));
 		$result->register("healing_splash_potion", fn() => Items::SPLASH_POTION()->setType(PotionType::HEALING()));
 		$result->register("heart_of_the_sea", fn() => Items::HEART_OF_THE_SEA());
+		$result->register("honey_bottle", fn() => Items::HONEY_BOTTLE());
 		$result->register("honeycomb", fn() => Items::HONEYCOMB());
 		$result->register("ink_sac", fn() => Items::INK_SAC());
 		$result->register("invisibility_potion", fn() => Items::POTION()->setType(PotionType::INVISIBILITY()));
