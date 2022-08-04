@@ -329,16 +329,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "11.0.3+bedrock-1.19.10",
+            "version": "~v1+11.0.3+bedrock-1.19.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pmmp/BedrockProtocol.git",
-                "reference": "18879218f9d05685ab6f8f68df4cb9c548978657"
+                "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
+                "reference": "158a34a2098826f6aecade7184fd10833ce1eba5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockProtocol/zipball/18879218f9d05685ab6f8f68df4cb9c548978657",
-                "reference": "18879218f9d05685ab6f8f68df4cb9c548978657",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/158a34a2098826f6aecade7184fd10833ce1eba5",
+                "reference": "158a34a2098826f6aecade7184fd10833ce1eba5",
                 "shasum": ""
             },
             "require": {
@@ -369,8 +369,8 @@
             ],
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
-                "issues": "https://github.com/pmmp/BedrockProtocol/issues",
-                "source": "https://github.com/pmmp/BedrockProtocol/tree/11.0.3+bedrock-1.19.10"
+                "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+11.0.3+bedrock-1.19.10"
             },
             "time": "2022-07-14T16:54:49+00:00"
         },

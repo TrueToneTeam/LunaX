@@ -46,21 +46,29 @@ class LegacySkinAdapter implements SkinAdapter{
 		}
 		return new SkinData(
 			$skin->getSkinId(),
-			"", //TODO: playfab ID
-			json_encode(["geometry" => ["default" => $geometryName]], JSON_THROW_ON_ERROR),
-			SkinImage::fromLegacy($skin->getSkinData()), [],
+			$skin->getPlayFabId(),
+			$skin->getResourcePatch(),
+			SkinImage::fromLegacy($skin->getSkinData()),
+			$skin->getAnimations(),
 			$capeImage,
-			$skin->getGeometryData()
+			$skin->getGeometryData(),
+			$skin->getGeometryDataEngineVersion(),
+			$skin->getAnimationData(),
+			$skin->getCapeId(),
+			$skin->getFullSkinId(),
+			$skin->getArmSize(),
+			$skin->getSkinColor(),
+			$skin->getPersonaPieces(),
+			$skin->getPieceTintColors(),
+			$skin->isVerified(),
+			$skin->isPremium(),
+			$skin->isPersona(),
+			$skin->isPersonaCapeOnClassic(),
+			$skin->isPrimaryUser()
 		);
 	}
 
 	public function fromSkinData(SkinData $data) : Skin{
-		if($data->isPersona()){
-			return new Skin("Standard_Custom", str_repeat(random_bytes(3) . "\xff", 4096));
-		}
-
-		$capeData = $data->isPersonaCapeOnClassic() ? "" : $data->getCapeImage()->getData();
-
 		$resourcePatch = json_decode($data->getResourcePatch(), true);
 		if(is_array($resourcePatch) && isset($resourcePatch["geometry"]["default"]) && is_string($resourcePatch["geometry"]["default"])){
 			$geometryName = $resourcePatch["geometry"]["default"];
@@ -68,6 +76,24 @@ class LegacySkinAdapter implements SkinAdapter{
 			throw new InvalidSkinException("Missing geometry name field");
 		}
 
-		return new Skin($data->getSkinId(), $data->getSkinImage()->getData(), $capeData, $geometryName, $data->getGeometryData());
+		$skin = new Skin($data->getSkinId(), $data->getSkinImage()->getData(), $data->getCapeImage()->getData(), $geometryName, $data->getGeometryData());
+		$skin->setPlayFabId($data->getPlayFabId());
+		$skin->setResourcePatch($data->getResourcePatch());
+		$skin->setSkinImage($data->getSkinImage());
+		$skin->setAnimations($data->getAnimations());
+		$skin->setAnimationData($data->getAnimationData());
+		$skin->setCapeId($data->getCapeId());
+		$skin->setFullSkinId($data->getFullSkinId());
+		$skin->setArmSize($data->getArmSize());
+		$skin->setSkinColor($data->getSkinColor());
+		$skin->setPersonaPieces($data->getPersonaPieces());
+		$skin->setPieceTintColors($data->getPieceTintColors());
+		$skin->setVerified($data->isVerified());
+		$skin->setPersona($data->isPersona());
+		$skin->setPremium($data->isPremium());
+		$skin->setPersonaCapeOnClassic($data->isPersonaCapeOnClassic());
+		$skin->setPrimaryUser($data->isPrimaryUser());
+		return $skin;
+		return $skin;
 	}
 }
