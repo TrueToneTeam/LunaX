@@ -39,12 +39,8 @@ class Cake extends BaseCake{
 
 	public function getRequiredStateDataBits() : int{ return 3; }
 
-	protected function decodeState(RuntimeDataReader $r) : void{
-		$this->bites = $r->readBoundedInt(3, 0, self::MAX_BITES);
-	}
-
-	protected function encodeState(RuntimeDataWriter $w) : void{
-		$w->writeBoundedInt(3, 0, self::MAX_BITES, $this->bites);
+	protected function describeState(RuntimeDataReader|RuntimeDataWriter $w) : void{
+		$w->boundedInt(3, 0, self::MAX_BITES, $this->bites);
 	}
 
 	/**
@@ -70,7 +66,7 @@ class Cake extends BaseCake{
 		return $this;
 	}
 
-	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null) : bool{
+	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null, array &$returnedItems = []) : bool{
 		if($item instanceof ItemBlock){
 			$block = $item->getBlock();
 			$resultBlock = null;
@@ -87,7 +83,7 @@ class Cake extends BaseCake{
 			}
 		}
 
-		return parent::onInteract($item, $face, $clickVector, $player);
+		return parent::onInteract($item, $face, $clickVector, $player, $returnedItems);
 	}
 
 	public function getResidue() : Block{

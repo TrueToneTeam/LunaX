@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe;
 
+use pocketmine\block\tile\Spawnable;
 use pocketmine\data\bedrock\EffectIdMap;
 use pocketmine\entity\Attribute;
 use pocketmine\entity\effect\EffectInstance;
@@ -58,6 +59,7 @@ use pocketmine\network\mcpe\handler\PreSpawnPacketHandler;
 use pocketmine\network\mcpe\handler\ResourcePacksPacketHandler;
 use pocketmine\network\mcpe\handler\SpawnResponsePacketHandler;
 use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\BlockActorDataPacket;
 use pocketmine\network\mcpe\protocol\ChunkRadiusUpdatedPacket;
 use pocketmine\network\mcpe\protocol\ClientboundPacket;
 use pocketmine\network\mcpe\protocol\DisconnectPacket;
@@ -372,9 +374,8 @@ class NetworkSession{
 			throw new PacketHandlingException("Unexpected non-serverbound packet");
 		}
 
-		$timings = Timings::getReceiveDataPacketTimings($packet);
+		$timings = Timings::getDecodeDataPacketTimings($packet);
 		$timings->startTiming();
-
 		try{
 			$stream = PacketSerializer::decoder($buffer, 0, $this->packetSerializerContext);
 			try{
@@ -386,7 +387,15 @@ class NetworkSession{
 				$remains = substr($stream->getBuffer(), $stream->getOffset());
 				$this->logger->debug("Still " . strlen($remains) . " bytes unread in " . $packet->getName() . ": " . bin2hex($remains));
 			}
+		}finally{
+			$timings->stopTiming();
+		}
 
+		$timings = Timings::getHandleDataPacketTimings($packet);
+		$timings->startTiming();
+		try{
+			//TODO: I'm not sure DataPacketReceiveEvent should be included in the handler timings, but it needs to be
+			//included for now to ensure the receivePacket timings are counted the way they were before
 			$ev = new DataPacketReceiveEvent($this, $packet);
 			$ev->call();
 			if(!$ev->isCancelled() && ($this->handler === null || !$packet->handle($this->handler))){
@@ -958,6 +967,22 @@ class NetworkSession{
 				try{
 					$this->queueCompressed($promise);
 					$onCompletion();
+
+					//TODO: HACK! we send the full tile data here, due to a bug in 1.19.10 which causes items in tiles
+					//(item frames, lecterns) to not load properly when they are sent in a chunk via the classic chunk
+					//sending mechanism. We workaround this bug by sending only bare essential data in LevelChunkPacket
+					//(enough to create the tiles, since BlockActorDataPacket can't create tiles by itself) and then
+					//send the actual tile properties here.
+					//TODO: maybe we can stuff these packets inside the cached batch alongside LevelChunkPacket?
+					$chunk = $currentWorld->getChunk($chunkX, $chunkZ);
+					if($chunk !== null){
+						foreach($chunk->getTiles() as $tile){
+							if(!($tile instanceof Spawnable)){
+								continue;
+							}
+							$this->sendDataPacket(BlockActorDataPacket::create(BlockPosition::fromVector3($tile->getPosition()), $tile->getSerializedSpawnCompound()));
+						}
+					}
 				}finally{
 					$world->timings->syncChunkSend->stopTiming();
 				}
