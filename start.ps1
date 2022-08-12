@@ -1,7 +1,7 @@
 ﻿[CmdletBinding(PositionalBinding=$false)]
 param (
 	[string]$php = "",
-	[switch]$Loop = $false,
+	[switch]$Loop = $true,
 	[string]$file = "",
 	[string][Parameter(ValueFromRemainingArguments)]$extraPocketMineArgs
 )
@@ -14,8 +14,8 @@ if($php -ne ""){
 }elseif((Get-Command php -ErrorAction SilentlyContinue)){
 	$binary = "php"
 }else{
-	echo "Couldn't find a PHP binary in system PATH or $pwd\bin\php"
-	echo "Please refer to the installation instructions at https://doc.pmmp.io/en/rtfd/installation.html"
+	echo "시스템 경로 [$pwd\bin\php]에서 PHP 파일을 찾을 수 없습니다."
+	echo "https://doc.pmmp.io/en/rtfd/installation.html 이곳에서 설치 지침을 참고해주세요!"
 	pause
 	exit 1
 }
@@ -23,9 +23,11 @@ if($php -ne ""){
 if($file -eq ""){
 	if(Test-Path "PocketMine-MP.phar"){
 	    $file = "PocketMine-MP.phar"
+	}elseif(Test-Path "src\PocketMine.php"){
+	    $file = "src\PocketMine.php"
 	}else{
-	    echo "PocketMine-MP.phar not found"
-	    echo "Downloads can be found at https://github.com/pmmp/PocketMine-MP/releases"
+	    echo "PocketMine-MP.phar 또는 PocketMine.php를 찾을 수 없습니다."
+	    echo "https://github.com/pmmp/PocketMine-MP/releases 이곳에서 다운로드 받으실 수 있습니다."
 	    pause
 	    exit 1
 	}
@@ -42,11 +44,10 @@ StartServer
 
 while($Loop){
 	if($loops -ne 0){
-		echo ("Restarted " + $loops + " times")
+		echo ("재부팅된 횟수: " + $loops + "번")
 	}
 	$loops++
-	echo "To escape the loop, press CTRL+C now. Otherwise, wait 5 seconds for the server to restart."
-	echo ""
-	Start-Sleep 5
+	echo "곧 서버가 재부팅 됩니다. 잠시만 기달려주세요!"
+	Start-Sleep 1
 	StartServer
 }

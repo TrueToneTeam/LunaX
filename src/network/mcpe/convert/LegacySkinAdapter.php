@@ -55,7 +55,7 @@ class LegacySkinAdapter implements SkinAdapter{
 			$skin->getGeometryDataEngineVersion(),
 			$skin->getAnimationData(),
 			$skin->getCapeId(),
-			$skin->getFullSkinId(),
+			null, //FullSkinId
 			$skin->getArmSize(),
 			$skin->getSkinColor(),
 			$skin->getPersonaPieces(),
