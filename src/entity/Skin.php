@@ -32,7 +32,6 @@ use Ahc\Json\Comment as CommentedJsonDecoder;
 use function implode;
 use function in_array;
 use function json_encode;
-use function json_last_error_msg;
 use function strlen;
 use const JSON_THROW_ON_ERROR;
 
@@ -108,9 +107,10 @@ final class Skin{
 		}
 
 		if($geometryData !== ""){
-			$decodedGeometry = (new CommentedJsonDecoder())->decode($geometryData);
-			if($decodedGeometry === false){
-				throw new InvalidSkinException("Invalid geometry data (" . json_last_error_msg() . ")");
+			try{
+				$decodedGeometry = (new CommentedJsonDecoder())->decode($geometryData);
+			}catch(\RuntimeException $e){
+				throw new InvalidSkinException("Invalid geometry data: " . $e->getMessage(), 0, $e);
 			}
 
 			/*
