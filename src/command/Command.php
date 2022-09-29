@@ -27,7 +27,6 @@ declare(strict_types=1);
 namespace pocketmine\command;
 
 use pocketmine\command\utils\CommandException;
-use pocketmine\console\ConsoleCommandSender;
 use pocketmine\lang\KnownTranslationFactory;
 use pocketmine\lang\Translatable;
 use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
@@ -37,6 +36,7 @@ use pocketmine\permission\PermissionManager;
 use pocketmine\Server;
 use pocketmine\timings\Timings;
 use pocketmine\timings\TimingsHandler;
+use pocketmine\utils\BroadcastLoggerForwarder;
 use pocketmine\utils\TextFormat;
 use function explode;
 use function str_replace;
@@ -288,12 +288,12 @@ abstract class Command{
 		$result = KnownTranslationFactory::chat_type_admin($source->getName(), $message);
 		$colored = $result->prefix(TextFormat::GRAY . TextFormat::ITALIC);
 
-		if($sendToSource && !($source instanceof ConsoleCommandSender)){
+		if($sendToSource){
 			$source->sendMessage($message);
 		}
 
 		foreach($users as $user){
-			if($user instanceof ConsoleCommandSender){
+			if($user instanceof BroadcastLoggerForwarder){
 				$user->sendMessage($result);
 			}elseif($user !== $source){
 				$user->sendMessage($colored);
