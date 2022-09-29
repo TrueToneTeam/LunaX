@@ -39,7 +39,10 @@ class ListCommand extends VanillaCommand{
 	public function __construct(string $name){
 		parent::__construct(
 			$name,
-			KnownTranslationFactory::pocketmine_command_list_description()
+			KnownTranslationFactory::pocketmine_command_list_description(),
+			null,
+			[],
+			[[]]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_LIST);
 	}

@@ -27,6 +27,9 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\world\World;
 use function count;
@@ -37,7 +40,16 @@ class DifficultyCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			KnownTranslationFactory::pocketmine_command_difficulty_description(),
-			KnownTranslationFactory::commands_difficulty_usage()
+			KnownTranslationFactory::commands_difficulty_usage(),
+			[],
+			[
+				[
+					CommandParameter::enum("difficulty", new CommandEnum("Difficulty", ["e", "easy", "h", "hard", "n", "normal", "p", "peaceful"]), 0)
+				],
+				[
+					CommandParameter::standard("difficulty", AvailableCommandsPacket::ARG_TYPE_INT)
+				]
+			]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_DIFFICULTY);
 	}

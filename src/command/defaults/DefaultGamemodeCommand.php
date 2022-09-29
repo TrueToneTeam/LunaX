@@ -26,6 +26,9 @@ namespace pocketmine\command\defaults;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\lang\KnownTranslationFactory;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\player\GameMode;
 use function count;
@@ -36,7 +39,13 @@ class DefaultGamemodeCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			KnownTranslationFactory::pocketmine_command_defaultgamemode_description(),
-			KnownTranslationFactory::commands_defaultgamemode_usage()
+			KnownTranslationFactory::commands_defaultgamemode_usage(),
+			[],
+			[
+				[
+					CommandParameter::enum("gameMode", new CommandEnum("GameMode", ["a", "adventure", "c", "creative", "s", "spectator", "survival"]), 0)
+				]
+			]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_DEFAULTGAMEMODE);
 	}

@@ -33,7 +33,10 @@ class StopCommand extends VanillaCommand{
 	public function __construct(string $name){
 		parent::__construct(
 			$name,
-			KnownTranslationFactory::pocketmine_command_stop_description()
+			KnownTranslationFactory::pocketmine_command_stop_description(),
+			null,
+			[],
+			[[]]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_STOP);
 	}

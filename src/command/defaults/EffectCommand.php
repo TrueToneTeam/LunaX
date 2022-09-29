@@ -28,6 +28,9 @@ use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\StringToEffectParser;
 use pocketmine\lang\KnownTranslationFactory;
+use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
+use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\utils\Limits;
 use pocketmine\utils\TextFormat;
@@ -40,7 +43,21 @@ class EffectCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			KnownTranslationFactory::pocketmine_command_effect_description(),
-			KnownTranslationFactory::commands_effect_usage()
+			KnownTranslationFactory::commands_effect_usage(),
+			[],
+			[
+				[
+					CommandParameter::standard("player", AvailableCommandsPacket::ARG_TYPE_TARGET),
+					CommandParameter::enum("effect", new CommandEnum("Effect", $this->getEffects()), 0),
+					CommandParameter::standard("seconds", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::standard("amplifier", AvailableCommandsPacket::ARG_TYPE_INT, 0, true),
+					CommandParameter::enum("hideParticles", new CommandEnum("Boolean", ["false, true"]), 0, true)
+				],
+				[
+					CommandParameter::standard("player", AvailableCommandsPacket::ARG_TYPE_TARGET),
+					CommandParameter::enum("clear", new CommandEnum("Clear", ["clear"]), 0)
+				]
+			]
 		);
 		$this->setPermission(DefaultPermissionNames::COMMAND_EFFECT);
 	}
@@ -116,5 +133,14 @@ class EffectCommand extends VanillaCommand{
 		}
 
 		return true;
+	}
+
+	public function getEffects() : array{
+		return ["absorption", "bad_omen", "blindness", "conduit_power", "darkness", "empty", "fatal_poison",
+			"fire_resistance", "haste", "health_boost", "hunger", "instant_damage", "instant_health",
+			"invisibility", "jump_boost", "levitation", "mining_fatigue", "nausera", "night_vision", "poison",
+			"regeneration", "saturation", "slow_falling", "slowness", "speed", "strength", "village_hero",
+			"water_breathing", "weakness", "wither"
+		];
 	}
 }
