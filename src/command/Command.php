@@ -34,8 +34,6 @@ use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\PermissionManager;
 use pocketmine\Server;
-use pocketmine\timings\Timings;
-use pocketmine\timings\TimingsHandler;
 use pocketmine\utils\BroadcastLoggerForwarder;
 use pocketmine\utils\TextFormat;
 use function explode;
@@ -62,8 +60,6 @@ abstract class Command{
 
 	private ?string $permission = null;
 	private ?string $permissionMessage = null;
-
-	public ?TimingsHandler $timings = null;
 	
 	/** @var CommandParameter[] */
 	private array $overloads = [];
@@ -143,7 +139,6 @@ abstract class Command{
 	public function setLabel(string $name) : bool{
 		$this->nextLabel = $name;
 		if(!$this->isRegistered()){
-			$this->timings = new TimingsHandler(Timings::INCLUDED_BY_OTHER_TIMINGS_PREFIX . "Command: " . $name);
 			$this->label = $name;
 
 			return true;
