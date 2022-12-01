@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec7250923f612f2c6b7fbff71dc314d4",
+    "content-hash": "6c40129ef11a3cfc79081b8f53edda8e",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -284,12 +284,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockData.git",
-                "reference": "74fbcebae366b31f4a97bbf39ebb99be632f17a0"
+                "reference": "3988f8887581082b53c6da64cac81a7837bba5e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/74fbcebae366b31f4a97bbf39ebb99be632f17a0",
-                "reference": "74fbcebae366b31f4a97bbf39ebb99be632f17a0",
+                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/3988f8887581082b53c6da64cac81a7837bba5e2",
+                "reference": "3988f8887581082b53c6da64cac81a7837bba5e2",
                 "shasum": ""
             },
             "type": "library",
@@ -302,7 +302,7 @@
                 "issues": "https://github.com/pmmp/BedrockData/issues",
                 "source": "https://github.com/pmmp/BedrockData/tree/modern-world-support"
             },
-            "time": "2022-10-31T19:07:33+00:00"
+            "time": "2022-11-30T16:22:05+00:00"
         },
         {
             "name": "pocketmine/bedrock-item-upgrade-schema",
@@ -333,16 +333,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "v1+16.0.0+bedrock-1.19.40",
+            "version": "v1+17.0.0+bedrock-1.19.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "68e9a5962319ae3a5570a8edb686eebfbd9d8907"
+                "reference": "0e3f7bc8d5fd419eaf79beba80ed0c3fcb3f19af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/68e9a5962319ae3a5570a8edb686eebfbd9d8907",
-                "reference": "68e9a5962319ae3a5570a8edb686eebfbd9d8907",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/0e3f7bc8d5fd419eaf79beba80ed0c3fcb3f19af",
+                "reference": "0e3f7bc8d5fd419eaf79beba80ed0c3fcb3f19af",
                 "shasum": ""
             },
             "require": {
@@ -374,9 +374,9 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+16.0.0+bedrock-1.19.40"
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+17.0.0+bedrock-1.19.50"
             },
-            "time": "2022-11-19T16:11:48+00:00"
+            "time": "2022-11-30T16:16:27+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
