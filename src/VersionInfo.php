@@ -37,7 +37,7 @@ final class VersionInfo{
 
 	public const CLIENT_NAME = "Luna X";
 	public const CLIENT_TYPE = "Ultimate";
-	public const CLIENT_VERSION = "2.0.0-ALPHA7";
+	public const CLIENT_VERSION = "2.0.0-ALPHA8";
 
 	private function __construct(){
 		//NOOP
