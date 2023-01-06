@@ -30,7 +30,6 @@ use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
-use pocketmine\utils\TextFormat;
 use function array_slice;
 use function count;
 use function implode;
@@ -76,7 +75,10 @@ class TitleCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(DefaultPermissionNames::COMMAND_TITLE);
+		$this->setPermission(implode(";", [
+			DefaultPermissionNames::COMMAND_TITLE_SELF,
+			DefaultPermissionNames::COMMAND_TITLE_OTHER
+		]));
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){
@@ -84,9 +86,8 @@ class TitleCommand extends VanillaCommand{
 			throw new InvalidCommandSyntaxException();
 		}
 
-		$player = $sender->getServer()->getPlayerByPrefix($args[0]);
+		$player = $this->fetchPermittedPlayerTarget($sender, $args[0], DefaultPermissionNames::COMMAND_TITLE_SELF, DefaultPermissionNames::COMMAND_TITLE_OTHER);
 		if($player === null){
-			$sender->sendMessage(KnownTranslationFactory::commands_generic_player_notFound()->prefix(TextFormat::RED));
 			return true;
 		}
 

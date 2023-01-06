@@ -96,7 +96,6 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemUseResult;
 use pocketmine\item\Releasable;
 use pocketmine\lang\KnownTranslationFactory;
-use pocketmine\lang\KnownTranslationKeys;
 use pocketmine\lang\Language;
 use pocketmine\lang\Translatable;
 use pocketmine\math\Vector3;
@@ -132,7 +131,6 @@ use pocketmine\world\World;
 use Ramsey\Uuid\UuidInterface;
 use function abs;
 use function array_filter;
-use function array_map;
 use function array_shift;
 use function assert;
 use function count;
@@ -2012,28 +2010,15 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	 * Sends a direct chat message to a player
 	 */
 	public function sendMessage(Translatable|string $message) : void{
-		if($message instanceof Translatable){
-			$this->sendTranslation($message->getText(), $message->getParameters());
-			return;
-		}
-
-		$this->getNetworkSession()->onRawChatMessage($message);
+		$this->getNetworkSession()->onChatMessage($message);
 	}
 
 	/**
+	 * @deprecated Use {@link Player::sendMessage()} with a Translatable instead.
 	 * @param string[]|Translatable[] $parameters
 	 */
 	public function sendTranslation(string $message, array $parameters = []) : void{
-		//we can't send nested translations to the client, so make sure they are always pre-translated by the server
-		$parameters = array_map(fn(string|Translatable $p) => $p instanceof Translatable ? $this->getLanguage()->translate($p) : $p, $parameters);
-		if(!$this->server->isLanguageForced()){
-			foreach($parameters as $i => $p){
-				$parameters[$i] = $this->getLanguage()->translateString($p, [], "pocketmine.");
-			}
-			$this->getNetworkSession()->onTranslatedChatMessage($this->getLanguage()->translateString($message, $parameters, "pocketmine."), $parameters);
-		}else{
-			$this->sendMessage($this->getLanguage()->translateString($message, $parameters));
-		}
+		$this->sendMessage(new Translatable($message, $parameters));
 	}
 
 	/**
@@ -2096,14 +2081,14 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	/**
 	 * Transfers a player to another server.
 	 *
-	 * @param string $address The IP address or hostname of the destination server
-	 * @param int    $port    The destination port, defaults to 19132
-	 * @param string $message Message to show in the console when closing the player
+	 * @param string                   $address The IP address or hostname of the destination server
+	 * @param int                      $port    The destination port, defaults to 19132
+	 * @param Translatable|string|null $message Message to show in the console when closing the player, null will use the default message
 	 *
 	 * @return bool if transfer was successful.
 	 */
-	public function transfer(string $address, int $port = 19132, string $message = "transfer") : bool{
-		$ev = new PlayerTransferEvent($this, $address, $port, $message);
+	public function transfer(string $address, int $port = 19132, Translatable|string|null $message = null) : bool{
+		$ev = new PlayerTransferEvent($this, $address, $port, $message ?? KnownTranslationFactory::pocketmine_disconnect_transfer());
 		$ev->call();
 		if(!$ev->isCancelled()){
 			$this->getNetworkSession()->transfer($ev->getAddress(), $ev->getPort(), $ev->getMessage());
@@ -2116,13 +2101,13 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	/**
 	 * Kicks a player from the server
 	 */
-	public function kick(string $reason = "", Translatable|string|null $quitMessage = null) : bool{
+	public function kick(Translatable|string $reason = "", Translatable|string|null $quitMessage = null) : bool{
 		$ev = new PlayerKickEvent($this, $reason, $quitMessage ?? $this->getLeaveMessage());
 		$ev->call();
 		if(!$ev->isCancelled()){
 			$reason = $ev->getReason();
 			if($reason === ""){
-				$reason = KnownTranslationKeys::DISCONNECTIONSCREEN_NOREASON;
+				$reason = KnownTranslationFactory::disconnectionScreen_noReason();
 			}
 			$this->disconnect($reason, $ev->getQuitMessage());
 
@@ -2141,10 +2126,10 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	 *
 	 * Note for internals developers: Do not call this from network sessions. It will cause a feedback loop.
 	 *
-	 * @param string                   $reason      Shown to the player, usually this will appear on their disconnect screen.
+	 * @param Translatable|string      $reason      Shown on the disconnect screen, and in the server log
 	 * @param Translatable|string|null $quitMessage Message to broadcast to online players (null will use default)
 	 */
-	public function disconnect(string $reason, Translatable|string|null $quitMessage = null) : void{
+	public function disconnect(Translatable|string $reason, Translatable|string|null $quitMessage = null) : void{
 		if(!$this->isConnected()){
 			return;
 		}
@@ -2157,10 +2142,9 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 	 * @internal
 	 * This method executes post-disconnect actions and cleanups.
 	 *
-	 * @param string                   $reason      Shown to the player, usually this will appear on their disconnect screen.
 	 * @param Translatable|string|null $quitMessage Message to broadcast to online players (null will use default)
 	 */
-	public function onPostDisconnect(string $reason, Translatable|string|null $quitMessage) : void{
+	public function onPostDisconnect(Translatable|string $reason, Translatable|string|null $quitMessage) : void{
 		if($this->isConnected()){
 			throw new \LogicException("Player is still connected");
 		}
@@ -2309,7 +2293,7 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 
 		$this->startDeathAnimation();
 
-		$this->getNetworkSession()->onServerDeath();
+		$this->getNetworkSession()->onServerDeath($ev->getDeathMessage());
 	}
 
 	protected function onDeathUpdate(int $tickDiff) : bool{
@@ -2319,7 +2303,7 @@ class Player extends Human implements CommandSender, ChunkListener, IPlayer{
 
 	public function respawn() : void{
 		if($this->server->isHardcore()){
-			if($this->kick("You have been banned because you died in hardcore mode")){ //this allows plugins to prevent the ban by cancelling PlayerKickEvent
+			if($this->kick(KnownTranslationFactory::pocketmine_disconnect_ban(KnownTranslationFactory::pocketmine_disconnect_ban_hardcore()))){ //this allows plugins to prevent the ban by cancelling PlayerKickEvent
 				$this->server->getNameBans()->addBan($this->getName(), "Died in hardcore mode");
 			}
 			return;

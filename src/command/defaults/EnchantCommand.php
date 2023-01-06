@@ -32,8 +32,8 @@ use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
-use pocketmine\utils\TextFormat;
 use function count;
+use function implode;
 
 class EnchantCommand extends VanillaCommand{
 
@@ -56,7 +56,10 @@ class EnchantCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(DefaultPermissionNames::COMMAND_ENCHANT);
+		$this->setPermission(implode(";", [
+			DefaultPermissionNames::COMMAND_ENCHANT_SELF,
+			DefaultPermissionNames::COMMAND_ENCHANT_OTHER
+		]));
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){
@@ -64,10 +67,8 @@ class EnchantCommand extends VanillaCommand{
 			throw new InvalidCommandSyntaxException();
 		}
 
-		$player = $sender->getServer()->getPlayerByPrefix($args[0]);
-
+		$player = $this->fetchPermittedPlayerTarget($sender, $args[0], DefaultPermissionNames::COMMAND_ENCHANT_SELF, DefaultPermissionNames::COMMAND_ENCHANT_OTHER);
 		if($player === null){
-			$sender->sendMessage(KnownTranslationFactory::commands_generic_player_notFound()->prefix(TextFormat::RED));
 			return true;
 		}
 

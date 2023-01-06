@@ -36,7 +36,6 @@ use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
-use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use function count;
 use function implode;
@@ -66,23 +65,9 @@ class ClearCommand extends VanillaCommand{
 			throw new InvalidCommandSyntaxException();
 		}
 
-		if(isset($args[0])){
-			$target = $sender->getServer()->getPlayerByPrefix($args[0]);
-			if($target === null){
-				$sender->sendMessage(KnownTranslationFactory::commands_generic_player_notFound()->prefix(TextFormat::RED));
-				return true;
-			}
-			if($target !== $sender && !$this->testPermission($sender, DefaultPermissionNames::COMMAND_CLEAR_OTHER)){
-				return true;
-			}
-		}elseif($sender instanceof Player){
-			if(!$this->testPermission($sender, DefaultPermissionNames::COMMAND_CLEAR_SELF)){
-				return true;
-			}
-
-			$target = $sender;
-		}else{
-			throw new InvalidCommandSyntaxException();
+		$target = $this->fetchPermittedPlayerTarget($sender, $args[0] ?? null, DefaultPermissionNames::COMMAND_CLEAR_SELF, DefaultPermissionNames::COMMAND_CLEAR_OTHER);
+		if($target === null){
+			return true;
 		}
 
 		$targetItem = null;

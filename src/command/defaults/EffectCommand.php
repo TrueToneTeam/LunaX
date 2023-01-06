@@ -35,6 +35,7 @@ use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\utils\Limits;
 use pocketmine\utils\TextFormat;
 use function count;
+use function implode;
 use function strtolower;
 
 class EffectCommand extends VanillaCommand{
@@ -59,7 +60,10 @@ class EffectCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(DefaultPermissionNames::COMMAND_EFFECT);
+		$this->setPermission(implode(";", [
+			DefaultPermissionNames::COMMAND_EFFECT_SELF,
+			DefaultPermissionNames::COMMAND_EFFECT_OTHER
+		]));
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){
@@ -67,10 +71,8 @@ class EffectCommand extends VanillaCommand{
 			throw new InvalidCommandSyntaxException();
 		}
 
-		$player = $sender->getServer()->getPlayerByPrefix($args[0]);
-
+		$player = $this->fetchPermittedPlayerTarget($sender, $args[0], DefaultPermissionNames::COMMAND_EFFECT_SELF, DefaultPermissionNames::COMMAND_EFFECT_OTHER);
 		if($player === null){
-			$sender->sendMessage(KnownTranslationFactory::commands_generic_player_notFound()->prefix(TextFormat::RED));
 			return true;
 		}
 		$effectManager = $player->getEffects();
