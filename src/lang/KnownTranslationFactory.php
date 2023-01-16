@@ -1629,6 +1629,10 @@ final class KnownTranslationFactory{
 		return new Translatable(KnownTranslationKeys::POCKETMINE_DISCONNECT_ERROR_LOGINTIMEOUT, []);
 	}
 
+	public static function pocketmine_disconnect_error_respawn() : Translatable{
+		return new Translatable(KnownTranslationKeys::POCKETMINE_DISCONNECT_ERROR_RESPAWN, []);
+	}
+
 	public static function pocketmine_disconnect_incompatibleProtocol(Translatable|string $param0) : Translatable{
 		return new Translatable(KnownTranslationKeys::POCKETMINE_DISCONNECT_INCOMPATIBLEPROTOCOL, [
 			0 => $param0,
@@ -2584,6 +2588,12 @@ final class KnownTranslationFactory{
 
 	public static function query_warning2() : Translatable{
 		return new Translatable(KnownTranslationKeys::QUERY_WARNING2, []);
+	}
+
+	public static function record_nowPlaying(Translatable|string $param0) : Translatable{
+		return new Translatable(KnownTranslationKeys::RECORD_NOWPLAYING, [
+			0 => $param0,
+		]);
 	}
 
 	public static function server_port() : Translatable{

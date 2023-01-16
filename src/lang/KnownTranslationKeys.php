@@ -354,6 +354,7 @@ final class KnownTranslationKeys{
 	public const POCKETMINE_DISCONNECT_ERROR_BADPACKET = "pocketmine.disconnect.error.badPacket";
 	public const POCKETMINE_DISCONNECT_ERROR_INTERNAL = "pocketmine.disconnect.error.internal";
 	public const POCKETMINE_DISCONNECT_ERROR_LOGINTIMEOUT = "pocketmine.disconnect.error.loginTimeout";
+	public const POCKETMINE_DISCONNECT_ERROR_RESPAWN = "pocketmine.disconnect.error.respawn";
 	public const POCKETMINE_DISCONNECT_INCOMPATIBLEPROTOCOL = "pocketmine.disconnect.incompatibleProtocol";
 	public const POCKETMINE_DISCONNECT_INVALIDSESSION = "pocketmine.disconnect.invalidSession";
 	public const POCKETMINE_DISCONNECT_INVALIDSESSION_BADSIGNATURE = "pocketmine.disconnect.invalidSession.badSignature";
@@ -549,6 +550,7 @@ final class KnownTranslationKeys{
 	public const QUERY_DISABLE = "query_disable";
 	public const QUERY_WARNING1 = "query_warning1";
 	public const QUERY_WARNING2 = "query_warning2";
+	public const RECORD_NOWPLAYING = "record.nowPlaying";
 	public const SERVER_PORT = "server_port";
 	public const SERVER_PORT_V4 = "server_port_v4";
 	public const SERVER_PORT_V6 = "server_port_v6";
