@@ -31,13 +31,13 @@ use function str_repeat;
 
 final class VersionInfo{
 	public const NAME = "Luna X(Ultimate)";
-	public const BASE_VERSION = "5.0.0-ALPHA7";
+	public const BASE_VERSION = "5.0.0-ALPHA9";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "alpha";
 
 	public const CLIENT_NAME = "Luna X";
 	public const CLIENT_TYPE = "Ultimate";
-	public const CLIENT_VERSION = "2.0.0-ALPHA11";
+	public const CLIENT_VERSION = "2.0.0-ALPHA12";
 
 	private function __construct(){
 		//NOOP

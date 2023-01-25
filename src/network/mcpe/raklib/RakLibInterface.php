@@ -37,6 +37,7 @@ use pocketmine\network\NetworkInterfaceStartException;
 use pocketmine\network\PacketHandlingException;
 use pocketmine\Server;
 use pocketmine\snooze\SleeperNotifier;
+use pocketmine\timings\Timings;
 use pocketmine\utils\Utils;
 use raklib\generic\SocketException;
 use raklib\protocol\EncapsulatedPacket;
@@ -84,8 +85,10 @@ class RakLibInterface implements ServerEventListener, AdvancedNetworkInterface{
 
 		$this->sleeper = new SleeperNotifier();
 
-		$mainToThreadBuffer = new \Threaded();
-		$threadToMainBuffer = new \Threaded();
+		/** @phpstan-var \ThreadedArray<int, string> $mainToThreadBuffer */
+		$mainToThreadBuffer = new \ThreadedArray();
+		/** @phpstan-var \ThreadedArray<int, string> $threadToMainBuffer */
+		$threadToMainBuffer = new \ThreadedArray();
 
 		$this->rakLib = new RakLibServer(
 			$this->server->getLogger(),
@@ -109,7 +112,12 @@ class RakLibInterface implements ServerEventListener, AdvancedNetworkInterface{
 
 	public function start() : void{
 		$this->server->getTickSleeper()->addNotifier($this->sleeper, function() : void{
-			while($this->eventReceiver->handle($this));
+			Timings::$connection->startTiming();
+			try{
+				while($this->eventReceiver->handle($this));
+			}finally{
+				Timings::$connection->stopTiming();
+			}
 		});
 		$this->server->getLogger()->debug("Waiting for RakLib to start...");
 		try{
