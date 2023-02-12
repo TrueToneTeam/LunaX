@@ -285,12 +285,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockData.git",
-                "reference": "d64617faab77300d828debcd1e3597b3403b63b7"
+                "reference": "27cb4d5133d6cbe30018b759eb97e3fdc7036c3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/d64617faab77300d828debcd1e3597b3403b63b7",
-                "reference": "d64617faab77300d828debcd1e3597b3403b63b7",
+                "url": "https://api.github.com/repos/pmmp/BedrockData/zipball/27cb4d5133d6cbe30018b759eb97e3fdc7036c3b",
+                "reference": "27cb4d5133d6cbe30018b759eb97e3fdc7036c3b",
                 "shasum": ""
             },
             "type": "library",
@@ -334,16 +334,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "v2.1+18.1.0+bedrock-1.19.50",
+            "version": "v1+19.0.0+bedrock-1.19.60",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "8e48412071d4401e14c05639e98ab9ecae4386dd"
+                "reference": "371fa085883be8ee1ab0cb1ec800a6216ad249ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/8e48412071d4401e14c05639e98ab9ecae4386dd",
-                "reference": "8e48412071d4401e14c05639e98ab9ecae4386dd",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/371fa085883be8ee1ab0cb1ec800a6216ad249ff",
+                "reference": "371fa085883be8ee1ab0cb1ec800a6216ad249ff",
                 "shasum": ""
             },
             "require": {
@@ -375,7 +375,7 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v2.1+18.1.0+bedrock-1.19.50"
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+19.0.0+bedrock-1.19.60"
             },
             "time": "2023-01-20T12:35:30+00:00"
         },
