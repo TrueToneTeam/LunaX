@@ -55,7 +55,7 @@ class LegacySkinAdapter implements SkinAdapter{
 			$skin->getGeometryDataEngineVersion(),
 			$skin->getAnimationData(),
 			$skin->getCapeId(),
-			null, //FullSkinId
+			$skin->getFullSkinId(),
 			$skin->getArmSize(),
 			$skin->getSkinColor(),
 			$skin->getPersonaPieces(),
@@ -83,7 +83,7 @@ class LegacySkinAdapter implements SkinAdapter{
 		$skin->setAnimations($data->getAnimations());
 		$skin->setAnimationData($data->getAnimationData());
 		$skin->setCapeId($data->getCapeId());
-		$skin->setFullSkinId($data->getFullSkinId());
+		$skin->setFullSkinId($data->getSkinId()); //1.19.60 Bug..
 		$skin->setArmSize($data->getArmSize());
 		$skin->setSkinColor($data->getSkinColor());
 		$skin->setPersonaPieces($data->getPersonaPieces());
