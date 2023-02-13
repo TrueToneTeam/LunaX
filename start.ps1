@@ -27,7 +27,7 @@ if($file -eq ""){
 	    $file = "src\PocketMine.php"
 	}else{
 	    echo "PocketMine-MP.phar 또는 PocketMine.php를 찾을 수 없습니다."
-	    echo "https://github.com/pmmp/PocketMine-MP/releases 이곳에서 다운로드 받으실 수 있습니다."
+	    echo "https://github.com/pmmp/PocketMine-MP/releases에서 파일을 다운로드 하실 수 있습니다."
 	    pause
 	    exit 1
 	}
@@ -44,10 +44,10 @@ StartServer
 
 while($Loop){
 	if($loops -ne 0){
-		echo ("재부팅된 횟수: " + $loops + "번")
+		echo ("구동기 실행 후 재부팅된 횟수: " + $loops + "번")
 	}
 	$loops++
-	echo "곧 서버가 재부팅 됩니다. 잠시만 기달려주세요!"
+	echo "잠시후 서버가 자동으로 다시 시작됩니다."
 	Start-Sleep 1
 	StartServer
 }

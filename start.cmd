@@ -16,17 +16,19 @@ if exist bin\php\php.exe (
 )
 
 if "%PHP_BINARY%"=="" (
-	echo Couldn't find a PHP binary in system PATH or "%~dp0bin\php"
-	echo Please refer to the installation instructions at https://doc.pmmp.io/en/rtfd/installation.html
+	echo 시스템 경로 ["%~dp0bin\php"]에서 PHP 파일을 찾을 수 없습니다.
+	echo https://doc.pmmp.io/en/rtfd/installation.html 이곳에서 설치 지침을 참고해주세요!
 	pause
 	exit 1
 )
 
 if exist PocketMine-MP.phar (
 	set POCKETMINE_FILE=PocketMine-MP.phar
+) else if exist src\PocketMine.php (
+	set POCKETMINE_FILE=src\PocketMine.php
 ) else (
-	echo PocketMine-MP.phar not found
-	echo Downloads can be found at https://github.com/pmmp/PocketMine-MP/releases
+	echo PocketMine-MP.phar 또는 PocketMine.php를 찾을 수 없습니다.
+	echo https://github.com/pmmp/PocketMine-MP/releases에서 파일을 다운로드 하실 수 있습니다.
 	pause
 	exit 1
 )
