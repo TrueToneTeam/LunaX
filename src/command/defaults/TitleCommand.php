@@ -75,10 +75,10 @@ class TitleCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(implode(";", [
+		$this->setPermissions([
 			DefaultPermissionNames::COMMAND_TITLE_SELF,
 			DefaultPermissionNames::COMMAND_TITLE_OTHER
-		]));
+		]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){

@@ -59,10 +59,10 @@ class GiveCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(implode(";", [
+		$this->setPermissions([
 			DefaultPermissionNames::COMMAND_GIVE_SELF,
 			DefaultPermissionNames::COMMAND_GIVE_OTHER
-		]));
+		]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){

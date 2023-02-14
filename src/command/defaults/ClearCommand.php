@@ -38,7 +38,6 @@ use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use pocketmine\utils\TextFormat;
 use function count;
-use function implode;
 use function min;
 
 class ClearCommand extends VanillaCommand{
@@ -57,7 +56,7 @@ class ClearCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(implode(";", [DefaultPermissionNames::COMMAND_CLEAR_SELF, DefaultPermissionNames::COMMAND_CLEAR_OTHER]));
+		$this->setPermissions([DefaultPermissionNames::COMMAND_CLEAR_SELF, DefaultPermissionNames::COMMAND_CLEAR_OTHER]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){

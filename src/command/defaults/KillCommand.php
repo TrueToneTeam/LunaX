@@ -33,7 +33,6 @@ use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use function count;
-use function implode;
 
 class KillCommand extends VanillaCommand{
 
@@ -49,7 +48,7 @@ class KillCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(implode(";", [DefaultPermissionNames::COMMAND_KILL_SELF, DefaultPermissionNames::COMMAND_KILL_OTHER]));
+		$this->setPermissions([DefaultPermissionNames::COMMAND_KILL_SELF, DefaultPermissionNames::COMMAND_KILL_OTHER]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){

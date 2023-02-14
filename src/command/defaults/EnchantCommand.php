@@ -33,7 +33,6 @@ use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
 use function count;
-use function implode;
 
 class EnchantCommand extends VanillaCommand{
 
@@ -56,10 +55,10 @@ class EnchantCommand extends VanillaCommand{
 				]
 			]
 		);
-		$this->setPermission(implode(";", [
+		$this->setPermissions([
 			DefaultPermissionNames::COMMAND_ENCHANT_SELF,
 			DefaultPermissionNames::COMMAND_ENCHANT_OTHER
-		]));
+		]);
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args){
