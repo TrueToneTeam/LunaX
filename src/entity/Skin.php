@@ -59,40 +59,24 @@ final class Skin{
 	private string $geometryName;
 	private string $geometryData;
 
-	/** @var string */
-	private $playFabId = "";
-	/** @var string */
-	private $resourcePatch;
-	/** @var SkinImage */
-	private $skinImage;
-	/** @var SkinAnimation[] */
-	private $animations = [];
-	/** @var string */
-	private $geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
-	/** @var string */
-	private $animationData = "";
-	/** @var string */
-	private $capeId = "";
-	/** @var string */
-	private $fullSkinId = "";
-	/** @var string */
-	private $armSize = SkinData::ARM_SIZE_WIDE;
-	/** @var string */
-	private $skinColor = "";
-	/** @var PersonaSkinPiece[] */
-	private $personaPieces = [];
-	/** @var PersonaPieceTintColor[] */
-	private $pieceTintColors = [];
-	/** @var bool */
-	private $isVerified = true;
-	/** @var bool */
-	private $persona = false;
-	/** @var bool */
-	private $premium = false;
-	/** @var bool */
-	private $personaCapeOnClassic = true;
-	/** @var bool */
-	private $isPrimaryUser = true;
+	private string $playFabId = "";
+	private string $resourcePatch;
+	private SkinImage $skinImage;
+	private array $animations = []; //SkinAnimation[]
+	private string $geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
+	private string $animationData = "";
+	private string $capeId = "";
+	private string $fullSkinId = "";
+	private string $armSize = SkinData::ARM_SIZE_WIDE;
+	private string $skinColor = "";
+	private array $personaPieces = []; //PersonaSkinPiece[]
+	private array $pieceTintColors = []; //PersonaPieceTintColor
+	private bool $isVerified = true;
+	private bool $persona = false;
+	private bool $premium = false;
+	private bool $personaCapeOnClassic = true;
+	private bool $isPrimaryUser = true;
+	private bool $override = true;
 
 	public function __construct(string $skinId, string $skinData, string $capeData = "", string $geometryName = "", string $geometryData = ""){
 		if($skinId === ""){
@@ -343,6 +327,15 @@ final class Skin{
 
 	public function setPrimaryUser(bool $isPrimaryUser) : self{
 		$this->isPrimaryUser = $isPrimaryUser;
+		return $this;
+	}
+
+	public function isOverride() : bool{
+		return $this->override;
+	}
+
+	public function setOverride(bool $override) : self{
+		$this->override = $override;
 		return $this;
 	}
 }
