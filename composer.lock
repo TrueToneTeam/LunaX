@@ -332,16 +332,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "v2+19.2.0+bedrock-1.19.62",
+            "version": "v1+19.3.0+bedrock-1.19.62",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "0fb1f272b9f4ba412589c7b277b5767f202b253d"
+                "reference": "23c3496405d21f78e6f00b679cdfeec7a32c03ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/0fb1f272b9f4ba412589c7b277b5767f202b253d",
-                "reference": "0fb1f272b9f4ba412589c7b277b5767f202b253d",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/23c3496405d21f78e6f00b679cdfeec7a32c03ae",
+                "reference": "23c3496405d21f78e6f00b679cdfeec7a32c03ae",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +373,7 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v2+19.2.0+bedrock-1.19.62"
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+19.3.0+bedrock-1.19.62"
             },
             "time": "2023-02-17T16:32:49+00:00"
         },
