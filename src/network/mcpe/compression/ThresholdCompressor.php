@@ -21,25 +21,11 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\network\mcpe\convert;
+namespace pocketmine\network\mcpe\compression;
 
-use pocketmine\data\bedrock\BedrockDataFiles;
-use pocketmine\network\mcpe\protocol\serializer\ItemTypeDictionary;
-use pocketmine\utils\Filesystem;
-use pocketmine\utils\SingletonTrait;
-
-final class GlobalItemTypeDictionary{
-	use SingletonTrait;
-
-	private static function make() : self{
-		$data = Filesystem::fileGetContents(BedrockDataFiles::REQUIRED_ITEM_LIST_JSON);
-		$dictionary = ItemTypeDictionaryFromDataHelper::loadFromString($data);
-		return new self($dictionary);
-	}
-
-	public function __construct(
-		private ItemTypeDictionary $dictionary
-	){}
-
-	public function getDictionary() : ItemTypeDictionary{ return $this->dictionary; }
+interface ThresholdCompressor extends Compressor{
+	/**
+	 * Returns the minimum size of packet batch that will be compressed. Null means that no packets will be compressed.
+	 */
+	public function getCompressionThreshold() : ?int;
 }
