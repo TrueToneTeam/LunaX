@@ -93,7 +93,7 @@ abstract class Command{
 	/**
 	 * @return string[]
 	 */
-	public function getPermission() : array{
+	public function getPermissions() : array{
 		return $this->permission;
 	}
 
