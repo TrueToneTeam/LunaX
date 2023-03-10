@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9751c90077792bd5d12ebb53a0214ec1",
+    "content-hash": "f707f156d90cc33b3330b5e85a5f6cef",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -254,16 +254,16 @@
         },
         {
             "name": "pocketmine/bedrock-block-upgrade-schema",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/BedrockBlockUpgradeSchema.git",
-                "reference": "78c965a2316986ac0eaf3235d75efb187127e7a2"
+                "reference": "e0540343e649a92126a1d4071ec401a811416c76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/BedrockBlockUpgradeSchema/zipball/78c965a2316986ac0eaf3235d75efb187127e7a2",
-                "reference": "78c965a2316986ac0eaf3235d75efb187127e7a2",
+                "url": "https://api.github.com/repos/pmmp/BedrockBlockUpgradeSchema/zipball/e0540343e649a92126a1d4071ec401a811416c76",
+                "reference": "e0540343e649a92126a1d4071ec401a811416c76",
                 "shasum": ""
             },
             "type": "library",
@@ -274,9 +274,9 @@
             "description": "Schemas describing how to upgrade saved block data in older Minecraft: Bedrock Edition world saves",
             "support": {
                 "issues": "https://github.com/pmmp/BedrockBlockUpgradeSchema/issues",
-                "source": "https://github.com/pmmp/BedrockBlockUpgradeSchema/tree/1.1.0"
+                "source": "https://github.com/pmmp/BedrockBlockUpgradeSchema/tree/1.1.1"
             },
-            "time": "2023-03-06T17:53:36+00:00"
+            "time": "2023-03-08T23:45:59+00:00"
         },
         {
             "name": "pocketmine/bedrock-data",
