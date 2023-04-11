@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "438d391135646f845eed034c362dffe3",
+    "content-hash": "b98a7a9bad1fb2d76e7dda351a4d7c19",
     "packages": [
         {
             "name": "adhocore/json-comment",
@@ -742,16 +742,16 @@
         },
         {
             "name": "pocketmine/nbt",
-            "version": "0.3.3",
+            "version": "0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pmmp/NBT.git",
-                "reference": "f4321be50df1a18b9f4e94d428a2e68a6e2ac2b4"
+                "reference": "62c02464c6708b2467c1e1a2af01af09d5114eda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pmmp/NBT/zipball/f4321be50df1a18b9f4e94d428a2e68a6e2ac2b4",
-                "reference": "f4321be50df1a18b9f4e94d428a2e68a6e2ac2b4",
+                "url": "https://api.github.com/repos/pmmp/NBT/zipball/62c02464c6708b2467c1e1a2af01af09d5114eda",
+                "reference": "62c02464c6708b2467c1e1a2af01af09d5114eda",
                 "shasum": ""
             },
             "require": {
@@ -761,7 +761,7 @@
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "1.7.7",
+                "phpstan/phpstan": "1.10.3",
                 "phpstan/phpstan-strict-rules": "^1.0",
                 "phpunit/phpunit": "^9.5"
             },
@@ -778,9 +778,9 @@
             "description": "PHP library for working with Named Binary Tags",
             "support": {
                 "issues": "https://github.com/pmmp/NBT/issues",
-                "source": "https://github.com/pmmp/NBT/tree/0.3.3"
+                "source": "https://github.com/pmmp/NBT/tree/0.3.4"
             },
-            "time": "2022-07-06T14:13:26+00:00"
+            "time": "2023-04-10T11:31:20+00:00"
         },
         {
             "name": "pocketmine/raklib",
