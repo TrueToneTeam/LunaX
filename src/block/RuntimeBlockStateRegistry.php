@@ -99,7 +99,6 @@ class RuntimeBlockStateRegistry{
 			try{
 				$v->decodeTypeAndStateData($stateData);
 				if($v->computeTypeAndStateData() !== $stateData){
-					//TODO: this should probably be a hard error
 					throw new \LogicException(get_class($block) . "::decodeStateData() accepts invalid state data (returned " . $v->computeTypeAndStateData() . " for input $stateData)");
 				}
 			}catch(InvalidSerializedRuntimeDataException){ //invalid property combination, leave it
@@ -151,18 +150,6 @@ class RuntimeBlockStateRegistry{
 		}
 	}
 
-	/**
-	 * @internal
-	 * Returns the default state of the block type associated with the given type ID.
-	 */
-	public function fromTypeId(int $typeId) : Block{
-		if(isset($this->typeIndex[$typeId])){
-			return clone $this->typeIndex[$typeId];
-		}
-
-		throw new \InvalidArgumentException("Block ID $typeId is not registered");
-	}
-
 	public function fromStateId(int $stateId) : Block{
 		if($stateId < 0){
 			throw new \InvalidArgumentException("Block state ID cannot be negative");
@@ -176,22 +163,6 @@ class RuntimeBlockStateRegistry{
 		}
 
 		return $block;
-	}
-
-	/**
-	 * Returns whether a specified block state is already registered in the block factory.
-	 */
-	public function isRegistered(int $typeId) : bool{
-		$b = $this->typeIndex[$typeId] ?? null;
-		return $b !== null && !($b instanceof UnknownBlock);
-	}
-
-	/**
-	 * @return Block[]
-	 * @phpstan-return array<int, Block>
-	 */
-	public function getAllKnownTypes() : array{
-		return $this->typeIndex;
 	}
 
 	/**
