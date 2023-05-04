@@ -37,6 +37,7 @@ use pocketmine\block\UnknownBlock;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\BiomeIds;
 use pocketmine\data\bedrock\block\BlockStateData;
+use pocketmine\data\bedrock\block\BlockStateDeserializeException;
 use pocketmine\data\SavedDataLoadingException;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityFactory;
@@ -66,7 +67,7 @@ use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
+use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\BlockActorDataPacket;
 use pocketmine\network\mcpe\protocol\ClientboundPacket;
@@ -526,9 +527,10 @@ class World implements ChunkManager{
 			if($item !== null){
 				$block = $item->getBlock();
 			}elseif(preg_match("/^-?\d+$/", $name) === 1){
-				//TODO: this may throw if the ID/meta was invalid
-				$blockStateData = GlobalBlockStateHandlers::getUpgrader()->upgradeIntIdMeta((int) $name, 0);
-				if($blockStateData === null){
+				//TODO: this is a really sketchy hack - remove this as soon as possible
+				try{
+					$blockStateData = GlobalBlockStateHandlers::getUpgrader()->upgradeIntIdMeta((int) $name, 0);
+				}catch(BlockStateDeserializeException){
 					continue;
 				}
 				$block = RuntimeBlockStateRegistry::getInstance()->fromStateId(GlobalBlockStateHandlers::getDeserializer()->deserialize($blockStateData));
@@ -1060,7 +1062,7 @@ class World implements ChunkManager{
 	public function createBlockUpdatePackets(array $blocks) : array{
 		$packets = [];
 
-		$blockMapping = RuntimeBlockMapping::getInstance();
+		$blockTranslator = TypeConverter::getInstance()->getBlockTranslator();
 
 		foreach($blocks as $b){
 			if(!($b instanceof Vector3)){
@@ -1072,7 +1074,7 @@ class World implements ChunkManager{
 
 			$tile = $this->getTileAt($b->x, $b->y, $b->z);
 			if($tile instanceof Spawnable && count($fakeStateProperties = $tile->getRenderUpdateBugWorkaroundStateProperties($fullBlock)) > 0){
-				$originalStateData = $blockMapping->toStateData($fullBlock->getStateId());
+				$originalStateData = $blockTranslator->toStateData($fullBlock->getStateId());
 				$fakeStateData = new BlockStateData(
 					$originalStateData->getName(),
 					array_merge($originalStateData->getStates(), $fakeStateProperties),
@@ -1080,14 +1082,14 @@ class World implements ChunkManager{
 				);
 				$packets[] = UpdateBlockPacket::create(
 					$blockPosition,
-					$blockMapping->getBlockStateDictionary()->lookupStateIdFromData($fakeStateData) ?? throw new AssumptionFailedError("Unmapped fake blockstate data: " . $fakeStateData->toNbt()),
+					$blockTranslator->getBlockStateDictionary()->lookupStateIdFromData($fakeStateData) ?? throw new AssumptionFailedError("Unmapped fake blockstate data: " . $fakeStateData->toNbt()),
 					UpdateBlockPacket::FLAG_NETWORK,
 					UpdateBlockPacket::DATA_LAYER_NORMAL
 				);
 			}
 			$packets[] = UpdateBlockPacket::create(
 				$blockPosition,
-				$blockMapping->toRuntimeId($fullBlock->getStateId()),
+				$blockTranslator->toRuntimeId($fullBlock->getStateId()),
 				UpdateBlockPacket::FLAG_NETWORK,
 				UpdateBlockPacket::DATA_LAYER_NORMAL
 			);
