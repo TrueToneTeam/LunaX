@@ -60,8 +60,8 @@ final class Skin{
 	private string $geometryData;
 
 	private string $playFabId = "";
-	private string $resourcePatch;
-	private SkinImage $skinImage;
+	private string $resourcePatch = "";
+	private SkinImage $skinImage = new SkinImage(64, 32, "");
 	private array $animations = []; //SkinAnimation[]
 	private string $geometryDataEngineVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
 	private string $animationData = "";
