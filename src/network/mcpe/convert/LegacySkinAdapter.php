@@ -40,10 +40,6 @@ class LegacySkinAdapter implements SkinAdapter{
 	public function toSkinData(Skin $skin) : SkinData{
 		$capeData = $skin->getCapeData();
 		$capeImage = $capeData === "" ? new SkinImage(0, 0, "") : new SkinImage(32, 64, $capeData);
-		$geometryName = $skin->getGeometryName();
-		if($geometryName === ""){
-			$geometryName = "geometry.humanoid.custom";
-		}
 		return new SkinData(
 			$skin->getSkinId(),
 			$skin->getPlayFabId(),

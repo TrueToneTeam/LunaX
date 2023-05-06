@@ -68,9 +68,9 @@ final class Skin{
 	private string $capeId = "";
 	private string $fullSkinId = "";
 	private string $armSize = SkinData::ARM_SIZE_WIDE;
-	private string $skinColor = "";
+	private string $skinColor = "#0";
 	private array $personaPieces = []; //PersonaSkinPiece[]
-	private array $pieceTintColors = []; //PersonaPieceTintColor
+	private array $pieceTintColors = []; //PersonaPieceTintColor[]
 	private bool $isVerified = true;
 	private bool $persona = false;
 	private bool $premium = false;
@@ -112,6 +112,17 @@ final class Skin{
 		$this->capeData = $capeData;
 		$this->geometryName = $geometryName;
 		$this->geometryData = $geometryData;
+
+		//Human NPC skin invisible error fix
+		if(empty($this->fullSkinId)){ $this->fullSkinId = $skinId; }
+		if(empty($this->resourcePatch)){
+			$this->resourcePatch = json_encode([
+				"geometry" => [
+					"default" => ((empty($geometryName)) ? "geometry.humanoid.custom" : $geometryName)
+				]
+			], JSON_THROW_ON_ERROR);
+		}
+		if(empty($this->skinImage)){ $this->skinImage = SkinImage::fromLegacy($skinData); }
 	}
 
 	public function getSkinId() : string{
