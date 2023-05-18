@@ -32,7 +32,7 @@ use function str_repeat;
 final class VersionInfo{
 	public const NAME = "Luna X(Ultimate)";
 
-	public const BASE_VERSION = "5.0.0-BETA3";
+	public const BASE_VERSION = "5.0.0-BETA4";
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "beta";
 

@@ -1532,15 +1532,15 @@ final class StringToItemParser extends StringToTParser{
 	}
 
 	/**
-	 * @var true[][][]
-	 * @phpstan-var array<int, array<int, array<string, true>>>
+	 * @var true[][]
+	 * @phpstan-var array<int, array<string, true>>
 	 */
 	private array $reverseMap = [];
 
 	public function register(string $alias, \Closure $callback) : void{
 		parent::register($alias, $callback);
 		$item = $callback($alias);
-		$this->reverseMap[$item->getTypeId()][$item->computeTypeData()][$alias] = true;
+		$this->reverseMap[$item->getStateId()][$alias] = true;
 	}
 
 	/** @phpstan-param \Closure(string $input) : Block $callback */
@@ -1559,7 +1559,7 @@ final class StringToItemParser extends StringToTParser{
 	 * @phpstan-return list<string>
 	 */
 	public function lookupAliases(Item $item) : array{
-		$aliases = $this->reverseMap[$item->getTypeId()][$item->computeTypeData()] ?? [];
+		$aliases = $this->reverseMap[$item->getStateId()] ?? [];
 		return array_keys($aliases);
 	}
 
