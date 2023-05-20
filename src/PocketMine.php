@@ -103,7 +103,7 @@ namespace pocketmine {
 			"openssl" => "OpenSSL",
 			"pcre" => "PCRE",
 			"phar" => "Phar",
-			"pthreads" => "pthreads",
+			"pmmpthread" => "pmmpthread",
 			"reflection" => "Reflection",
 			"sockets" => "Sockets",
 			"spl" => "SPL",
@@ -118,12 +118,9 @@ namespace pocketmine {
 			}
 		}
 
-		if(($pthreads_version = phpversion("pthreads")) !== false){
-			if(substr_count($pthreads_version, ".") < 2){
-				$pthreads_version = "0.$pthreads_version";
-			}
-			if(version_compare($pthreads_version, "5.1.0") < 0 || version_compare($pthreads_version, "6.0.0") >= 0){
-				$messages[] = "pthreads ^5.0.0 is required, while you have $pthreads_version.";
+		if(($pmmpthread_version = phpversion("pmmpthread")) !== false){
+			if(version_compare($pmmpthread_version, "6.0.0-beta1") < 0 || version_compare($pmmpthread_version, "7.0.0") >= 0){
+				$messages[] = "pmmpthread ^6.0.0 is required, while you have $pmmpthread_version.";
 			}
 		}
 
@@ -338,7 +335,7 @@ JIT_WARNING
 			$logger->info("Stopping other threads");
 
 			$killer = new ServerKiller(8);
-			$killer->start(PTHREADS_INHERIT_NONE);
+			$killer->start();
 			usleep(10000); //Fixes ServerKiller not being able to start on single-core machines
 
 			if(ThreadManager::getInstance()->stopAll() > 0){
