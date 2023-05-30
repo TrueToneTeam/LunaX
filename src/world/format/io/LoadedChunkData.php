@@ -23,33 +23,23 @@ declare(strict_types=1);
 
 namespace pocketmine\world\format\io;
 
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\world\format\SubChunk;
+/**
+ * Encapsulates information returned when loading a chunk. This includes more information than saving a chunk, since the
+ * data might have been upgraded or need post-processing.
+ */
+final class LoadedChunkData{
+	public const FIXER_FLAG_NONE = 0;
+	public const FIXER_FLAG_ALL = ~0;
 
-final class ChunkData{
-
-	/**
-	 * @param SubChunk[]    $subChunks
-	 * @param CompoundTag[] $entityNBT
-	 * @param CompoundTag[] $tileNBT
-	 */
 	public function __construct(
-		private array $subChunks,
-		private bool $populated,
-		private array $entityNBT,
-		private array $tileNBT
+		private ChunkData $data,
+		private bool $upgraded,
+		private int $fixerFlags
 	){}
 
-	/**
-	 * @return SubChunk[]
-	 */
-	public function getSubChunks() : array{ return $this->subChunks; }
+	public function getData() : ChunkData{ return $this->data; }
 
-	public function isPopulated() : bool{ return $this->populated; }
+	public function isUpgraded() : bool{ return $this->upgraded; }
 
-	/** @return CompoundTag[] */
-	public function getEntityNBT() : array{ return $this->entityNBT; }
-
-	/** @return CompoundTag[] */
-	public function getTileNBT() : array{ return $this->tileNBT; }
+	public function getFixerFlags() : int{ return $this->fixerFlags; }
 }

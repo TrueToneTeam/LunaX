@@ -58,6 +58,11 @@ class Block{
 	public const INTERNAL_STATE_DATA_BITS = 8;
 	public const INTERNAL_STATE_DATA_MASK = ~(~0 << self::INTERNAL_STATE_DATA_BITS);
 
+	/**
+	 * @internal
+	 */
+	public const EMPTY_STATE_ID = (BlockTypeIds::AIR << self::INTERNAL_STATE_DATA_BITS) | (BlockTypeIds::AIR & self::INTERNAL_STATE_DATA_MASK);
+
 	protected BlockIdentifier $idInfo;
 	protected string $fallbackName;
 	protected BlockTypeInfo $typeInfo;
@@ -140,7 +145,13 @@ class Block{
 	 * {@link RuntimeBlockStateRegistry::fromStateId()}.
 	 */
 	public function getStateId() : int{
-		return ($this->getTypeId() << self::INTERNAL_STATE_DATA_BITS) | $this->encodeFullState();
+		$typeId = $this->getTypeId();
+		//TODO: this XOR mask improves hashtable distribution, but it's only effective if the number of unique block
+		//type IDs is larger than the number of available state data bits. We should probably hash (e.g. using xxhash)
+		//the type ID to create a better mask.
+		//Alternatively, we could hash the whole state ID, but this is currently problematic, since we currently need
+		//to be able to recover the state data from the state ID because of UnknownBlock.
+		return ($typeId << self::INTERNAL_STATE_DATA_BITS) | ($this->encodeFullState() ^ ($typeId & self::INTERNAL_STATE_DATA_MASK));
 	}
 
 	/**
