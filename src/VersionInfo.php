@@ -31,9 +31,9 @@ use function str_repeat;
 
 final class VersionInfo{
 	public const NAME = "Luna X(Ultimate)";
-	public const BASE_VERSION = "5.0.0-BETA5";
+	public const BASE_VERSION = "5.0.1";
 	public const IS_DEVELOPMENT_BUILD = true;
-	public const BUILD_CHANNEL = "beta";
+	public const BUILD_CHANNEL = "stable";
 
 	/**
 	 * PocketMine-MP-specific version ID for world data. Used to determine what fixes need to be applied to old world
@@ -51,11 +51,13 @@ final class VersionInfo{
 	public const TAG_WORLD_DATA_VERSION = "PMMPDataVersion"; //TAG_Long
 
 	/**
-	 * Luna X - Client Info
+	 * Luna X
+	 * Client Info
 	 */
 	public const CLIENT_NAME = "Luna X";
 	public const CLIENT_TYPE = "Ultimate";
-	public const CLIENT_VERSION = "2.0.0-BETA15";
+	public const CLIENT_VERSION = "2.0.0";
+	public const CLIENT_DEVELOPMENT_BUILD = false;
 
 	private function __construct(){
 		//NOOP
