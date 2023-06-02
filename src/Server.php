@@ -962,6 +962,15 @@ class Server{
 			)));
 			$this->logger->info($this->getLanguage()->translate(KnownTranslationFactory::pocketmine_server_license($this->getName())));
 
+			//Luna X: Client Info
+			$this->logger->notice("이 구동기는 PocketMine-MP에 ".TextFormat::LIGHT_PURPLE.VersionInfo::CLIENT_NAME."(".VersionInfo::CLIENT_TYPE.")".TextFormat::RESET." ".TextFormat::GREEN.VersionInfo::CLIENT_VERSION.TextFormat::RESET." 클라이언트를 포함해서 실행하고 있습니다.");
+			if(VersionInfo::CLIENT_IS_DEVELOPMENT_BUILD){
+				$this->logger->warning(str_repeat("-", 40));
+				$this->logger->warning("현재 Luna X의 개발 버전을 사용하고 있습니다. 일부 기능이 제대로 구현되지 않았거나, 서버에 치명적인 버그가 발생할 수 있습니다.");
+				$this->logger->warning("따라서 서버의 중요한 정보들은 자주 백업 하는 것을 권장합니다.");
+				$this->logger->warning(str_repeat("-", 40));
+			}
+
 			TimingsHandler::setEnabled($this->configGroup->getPropertyBool("settings.enable-profiling", false));
 			$this->profilingTickRate = $this->configGroup->getPropertyInt("settings.profile-report-trigger", self::TARGET_TICKS_PER_SECOND);
 
