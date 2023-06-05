@@ -1,4 +1,4 @@
-# **Luna X**
+# Luna X *Ultimate*
 ### **Info**
  - Luna X is modified based on PocketMine-MP.
  - PocketMine-MP(pmmp): [PocketMine-MP](https://github.com/pmmp/PocketMine-MP/ "PocketMine-MP Github")
