@@ -83,6 +83,7 @@ use pocketmine\network\mcpe\protocol\types\AbilitiesLayer;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandOverload;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\network\mcpe\protocol\types\command\CommandPermissions;
 use pocketmine\network\mcpe\protocol\types\DimensionIds;
@@ -985,7 +986,10 @@ class NetworkSession{
 				0,
 				0,
 				$aliasObj,
-				$overloads
+				[
+					new CommandOverload(chaining: false, parameters: $overloads)
+				],
+				chainedSubCommandData: []
 			);
 
 			$commandData[$command->getLabel()] = $data;
