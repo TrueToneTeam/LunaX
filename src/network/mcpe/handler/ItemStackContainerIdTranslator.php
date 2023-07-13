@@ -70,6 +70,7 @@ final class ItemStackContainerIdTranslator{
 			ContainerUIIds::MATERIAL_REDUCER_OUTPUT,
 			ContainerUIIds::SMITHING_TABLE_INPUT,
 			ContainerUIIds::SMITHING_TABLE_MATERIAL,
+			ContainerUIIds::SMITHING_TABLE_TEMPLATE,
 			ContainerUIIds::STONECUTTER_INPUT,
 			ContainerUIIds::TRADE2_INGREDIENT1,
 			ContainerUIIds::TRADE2_INGREDIENT2,

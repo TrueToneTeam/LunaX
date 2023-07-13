@@ -979,16 +979,17 @@ class NetworkSession{
 			}
 
 			$description = $command->getDescription();
-			$overloads = $command->getOverloads();
+			$overloads = [];
+			foreach($command->getOverloads() as $parameters){
+				$overloads[] = new CommandOverload(chaining: false, parameters: $parameters);
+			}
 			$data = new CommandData(
 				$lname, //TODO: commands containing uppercase letters in the name crash 1.9.0 client
 				$description instanceof Translatable ? $this->player->getLanguage()->translate($description) : $description,
 				0,
 				0,
 				$aliasObj,
-				[
-					new CommandOverload(chaining: false, parameters: $overloads)
-				],
+				$overloads,
 				chainedSubCommandData: []
 			);
 
