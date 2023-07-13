@@ -83,6 +83,7 @@ use pocketmine\network\mcpe\protocol\types\AbilitiesLayer;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
+use pocketmine\network\mcpe\protocol\types\command\CommandOverload;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\network\mcpe\protocol\types\command\CommandPermissions;
 use pocketmine\network\mcpe\protocol\types\DimensionIds;
@@ -978,14 +979,18 @@ class NetworkSession{
 			}
 
 			$description = $command->getDescription();
-			$overloads = $command->getOverloads();
+			$overloads = [];
+			foreach($command->getOverloads() as $parameters){
+				$overloads[] = new CommandOverload(chaining: false, parameters: $parameters);
+			}
 			$data = new CommandData(
 				$lname, //TODO: commands containing uppercase letters in the name crash 1.9.0 client
 				$description instanceof Translatable ? $this->player->getLanguage()->translate($description) : $description,
 				0,
 				0,
 				$aliasObj,
-				$overloads
+				$overloads,
+				chainedSubCommandData: []
 			);
 
 			$commandData[$command->getLabel()] = $data;
