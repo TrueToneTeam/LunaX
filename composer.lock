@@ -280,16 +280,16 @@
         },
         {
             "name": "pocketmine/bedrock-protocol",
-            "version": "v2+23.0.0+bedrock-1.20.10",
+            "version": "v1+23.0.1+bedrock-1.20.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TrueToneTeam/BedrockProtocol.git",
-                "reference": "37d7e3c579b4dc53cbbc0aea4f007b7ac41b2fc7"
+                "reference": "80cfe63f73d1417c7a1dfc53debe1bc6452bb294"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/37d7e3c579b4dc53cbbc0aea4f007b7ac41b2fc7",
-                "reference": "37d7e3c579b4dc53cbbc0aea4f007b7ac41b2fc7",
+                "url": "https://api.github.com/repos/TrueToneTeam/BedrockProtocol/zipball/80cfe63f73d1417c7a1dfc53debe1bc6452bb294",
+                "reference": "80cfe63f73d1417c7a1dfc53debe1bc6452bb294",
                 "shasum": ""
             },
             "require": {
@@ -321,9 +321,9 @@
             "description": "An implementation of the Minecraft: Bedrock Edition protocol in PHP",
             "support": {
                 "issues": "https://github.com/TrueToneTeam/BedrockProtocol/issues",
-                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v2+23.0.0+bedrock-1.20.10"
+                "source": "https://github.com/TrueToneTeam/BedrockProtocol/tree/v1+23.0.1+bedrock-1.20.10"
             },
-            "time": "2023-07-12T12:19:40+00:00"
+            "time": "2023-07-18T21:07:24+00:00"
         },
         {
             "name": "pocketmine/binaryutils",
@@ -1942,16 +1942,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.2.5",
+            "version": "10.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd"
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
                 "shasum": ""
             },
             "require": {
@@ -2023,7 +2023,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
             },
             "funding": [
                 {
@@ -2039,7 +2039,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-14T04:18:47+00:00"
+            "time": "2023-07-17T12:08:28+00:00"
         },
         {
             "name": "sebastian/cli-parser",
