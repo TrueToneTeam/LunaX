@@ -85,6 +85,7 @@ final class ItemStackContainerIdTranslator{
 			ContainerUIIds::FURNACE_FUEL,
 			ContainerUIIds::FURNACE_INGREDIENT,
 			ContainerUIIds::FURNACE_RESULT,
+			ContainerUIIds::HORSE_EQUIP,
 			ContainerUIIds::LEVEL_ENTITY, //chest
 			ContainerUIIds::SHULKER_BOX,
 			ContainerUIIds::SMOKER_INGREDIENT => [$currentWindowId, $slotId],

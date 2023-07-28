@@ -21,18 +21,21 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\block;
+namespace pocketmine\thread;
 
-use pocketmine\block\utils\FacesOppositePlacingPlayerTrait;
-use pocketmine\item\Item;
-use pocketmine\math\Vector3;
-use pocketmine\player\Player;
+use pmmp\thread\ThreadSafe;
 
-final class ChemistryTable extends Opaque{
-	use FacesOppositePlacingPlayerTrait;
+final class ThreadCrashInfoFrame extends ThreadSafe{
 
-	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null, array &$returnedItems = []) : bool{
-		//TODO
-		return false;
-	}
+	public function __construct(
+		private string $printableFrame,
+		private ?string $file,
+		private int $line,
+	){}
+
+	public function getPrintableFrame() : string{ return $this->printableFrame; }
+
+	public function getFile() : ?string{ return $this->file; }
+
+	public function getLine() : int{ return $this->line; }
 }

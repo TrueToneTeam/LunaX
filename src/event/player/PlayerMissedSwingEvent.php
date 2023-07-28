@@ -21,18 +21,19 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\block;
+namespace pocketmine\event\player;
 
-use pocketmine\block\utils\FacesOppositePlacingPlayerTrait;
-use pocketmine\item\Item;
-use pocketmine\math\Vector3;
+use pocketmine\event\Cancellable;
+use pocketmine\event\CancellableTrait;
 use pocketmine\player\Player;
 
-final class ChemistryTable extends Opaque{
-	use FacesOppositePlacingPlayerTrait;
+/**
+ * Called when a player attempts to perform the attack action (left-click) without a target entity.
+ */
+class PlayerMissedSwingEvent extends PlayerEvent implements Cancellable{
+	use CancellableTrait;
 
-	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null, array &$returnedItems = []) : bool{
-		//TODO
-		return false;
+	public function __construct(Player $player){
+		$this->player = $player;
 	}
 }

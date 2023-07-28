@@ -21,18 +21,18 @@
 
 declare(strict_types=1);
 
-namespace pocketmine\block;
+namespace pocketmine\thread;
 
-use pocketmine\block\utils\FacesOppositePlacingPlayerTrait;
-use pocketmine\item\Item;
-use pocketmine\math\Vector3;
-use pocketmine\player\Player;
+final class ThreadCrashException extends ThreadException{
 
-final class ChemistryTable extends Opaque{
-	use FacesOppositePlacingPlayerTrait;
+	private ThreadCrashInfo $crashInfo;
 
-	public function onInteract(Item $item, int $face, Vector3 $clickVector, ?Player $player = null, array &$returnedItems = []) : bool{
-		//TODO
-		return false;
+	public function __construct(string $message, ThreadCrashInfo $crashInfo){
+		parent::__construct($message);
+		$this->crashInfo = $crashInfo;
+	}
+
+	public function getCrashInfo() : ThreadCrashInfo{
+		return $this->crashInfo;
 	}
 }
