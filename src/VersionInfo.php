@@ -35,6 +35,8 @@ final class VersionInfo{
 	public const IS_DEVELOPMENT_BUILD = true;
 	public const BUILD_CHANNEL = "stable";
 
+	public const PMMP_BASE_VERSION = "5.4.3";
+
 	/**
 	 * PocketMine-MP-specific version ID for world data. Used to determine what fixes need to be applied to old world
 	 * data (e.g. stuff saved wrongly by past versions).
