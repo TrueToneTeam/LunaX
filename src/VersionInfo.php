@@ -32,7 +32,7 @@ use function str_repeat;
 final class VersionInfo{
 	public const NAME = "Luna X(Ultimate)";
 	public const BASE_VERSION = "5.4.1";
-	public const IS_DEVELOPMENT_BUILD = true;
+	public const IS_DEVELOPMENT_BUILD = false;
 	public const BUILD_CHANNEL = "stable";
 
 	/**
@@ -57,7 +57,7 @@ final class VersionInfo{
 	public const CLIENT_NAME = "Luna X";
 	public const CLIENT_TYPE = "Ultimate";
 	public const CLIENT_VERSION = "2.4.1";
-	public const CLIENT_IS_DEVELOPMENT_BUILD = true;
+	public const CLIENT_IS_DEVELOPMENT_BUILD = false;
 
 	private function __construct(){
 		//NOOP
