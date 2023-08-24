@@ -31,11 +31,11 @@ use function str_repeat;
 
 final class VersionInfo{
 	public const NAME = "Luna X(Ultimate)";
-	public const BASE_VERSION = "5.4.3";
+	public const BASE_VERSION = "5.5.0-BETA2";
 	public const IS_DEVELOPMENT_BUILD = true;
-	public const BUILD_CHANNEL = "stable";
+	public const BUILD_CHANNEL = "beta";
 
-	public const PMMP_BASE_VERSION = "5.4.3";
+	public const PMMP_BASE_VERSION = "5.5.0";
 
 	/**
 	 * PocketMine-MP-specific version ID for world data. Used to determine what fixes need to be applied to old world
