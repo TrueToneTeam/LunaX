@@ -31,6 +31,7 @@ use pocketmine\network\mcpe\protocol\AvailableCommandsPacket;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\permission\DefaultPermissionNames;
+use pocketmine\ServerProperties;
 use pocketmine\world\World;
 use function count;
 
@@ -66,7 +67,7 @@ class DifficultyCommand extends VanillaCommand{
 		}
 
 		if($difficulty !== -1){
-			$sender->getServer()->getConfigGroup()->setConfigInt("difficulty", $difficulty);
+			$sender->getServer()->getConfigGroup()->setConfigInt(ServerProperties::DIFFICULTY, $difficulty);
 
 			//TODO: add per-world support
 			foreach($sender->getServer()->getWorldManager()->getWorlds() as $world){
